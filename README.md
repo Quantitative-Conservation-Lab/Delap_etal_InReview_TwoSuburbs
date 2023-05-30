@@ -65,8 +65,6 @@ viridis (v0.6.3)
 
 ### Details of Article 
 
-(Citation here, see example) 
-
 DeLap JH, JM Marzluff, and SJ Converse. In Review. A tale of two suburbs: influence of new residential construction varying in housing density on bird species, human tolerance guilds, and communities. 
 
 ### How to Use this Repository 
