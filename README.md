@@ -18,7 +18,9 @@ Folders include scripts, data, results, and figures. See files listed below.
 ### [Scripts](./scripts)
 
 analysis.R
+
 plotting_code_spp.R
+
 plotting_code_guilds.R
  
 ### [Data](./data) 
@@ -28,25 +30,36 @@ Bird_Data.csv
 ### [Results](./results)
 
 spp.1.57.v2.RData
+
 allSpp_AIC.RData
+
 allBoots_15April.RData
 
 
 ### [Figures](./figures)
 
 Adaptor_Figure.png
+
 Avoider_Figure.png
+
 Exploiter_Figure.png
+
 Guilds_Figure.png
 
 ### Required Packages and Versions Used 
 
 here (v1.0.1)
+
 tidyr (v1.3.0)
+
 lme4 (v1.1.33)
+
 stringr (v1.5.0)
+
 ggplot2 (v3.4.2)
+
 ggpub4 (v0.6.0)
+
 viridis (v0.6.3)
 
 
