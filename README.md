@@ -1,50 +1,61 @@
-## *Great GitHub Repos through the Ages* (Paper Title)
+## *A tale of two suburbs: influence of new residential construction varying in housing density on bird species, human tolerance guilds, and communities*
 
-#### Ann K Postdoc and Sarah J Converse (Paper Authors)
+#### Jack H DeLap, John M. Marzluff, and Sarah J Converse 
 
-##### Please contact the first author for questions about the code or data: (add Name and email)
+##### Please contact the first author for questions about the code or data: Jack DeLap (jdelap@cornish.edu)
 ##### Secondary contact: Sarah Converse (sconver@usgs.gov)
 
 _______________________________________________________________________________________
 
 ## Abstract
 
-(Add Abstract here) 
+Human population growth and changing settlement patterns fuel the development of urban fringe lands worldwide, with implications for biodiversity. We conducted a 12-year study of birds in the fast-developing urban fringe lands of the Central Puget Sound region, Washington, USA, to examine the effect of development configuration on birds, including human-tolerance guilds and individual species. We hypothesized that lower-intensity conservation developments (CDs), compared to higher-intensity planned community developments (PCDs), would benefit the overall bird community, as well as native forest birds (avoiders of human development) and avian generalist species (adapters to human development), but that PCDs would benefit synanthropic species (exploiters of human development). Consistent with these hypotheses, we observed a greater proportion of the overall community, avoiders, and adapters in CDs, while we observed a greater proportion of exploiters in PCDs. We also hypothesized that human tolerance guilds would be a useful but imperfect, predictor of individual species responses. This hypothesis was also supported: we found that, for avoiders, 94% of species in the guild had the same response as the overall guild; for adapters, 64%; and for exploiters, 56%. Our results indicate that the configuration of suburban developments can have a meaningful impact on bird communities.
 
 ### Table of Contents 
 
-(Add detail on what is in each folder within the repo - see the template for all possible folders, but at a minimum you should have the folders below, see examples below.) 
+Folders include scripts, data, results, and figures. See files listed below. 
 
 ### [Scripts](./scripts)
 
-Contains scripts to run all analyses. 
+analysis.R
+plotting_code_spp.R
+plotting_code_guilds.R
  
 ### [Data](./data) 
 
-Contains raw and processed data.
+Bird_Data.csv
 
 ### [Results](./results)
 
-Contains raw and processed results.  
+spp.1.57.v2.RData
+allSpp_AIC.RData
+allBoots_15April.RData
+
 
 ### [Figures](./figures)
 
-Contains pdf versions of all figures in manuscript. 
+Adaptor_Figure.png
+Avoider_Figure.png
+Exploiter_Figure.png
+Guilds_Figure.png
 
 ### Required Packages and Versions Used 
 
-(here, list all required packages and the version you used, see examples) 
+here (v1.0.1)
+tidyr (v1.3.0)
+lme4 (v1.1.33)
+stringr (v1.5.0)
+ggplot2 (v3.4.2)
+ggpub4 (v0.6.0)
+viridis (v0.6.3)
 
-here_1.0.1
-
-dplyr_1.0.5
 
 ### Details of Article 
 
 (Citation here, see example) 
 
-Warlick AJ, DS Johnson, TS Gelatt, and SJ Converse. 2022. Environmental drivers of demography and potential factors limiting the recovery of an endangered marine top predator. Ecosphere 2022:e4325. https://doi.org/10.1002/ecs2.4325. 
+DeLap JH, JM Marzluff, and SJ Converse. In Review. A tale of two suburbs: influence of new residential construction varying in housing density on bird species, human tolerance guilds, and communities. 
 
 ### How to Use this Repository 
 
-(Provide some guidance here to users, is there an order in which they should run things, for example?)  
+Run analysis code first, which will create several data objects that can be subsequently run to create figures. Run time for all analyses is >24 hours. 
