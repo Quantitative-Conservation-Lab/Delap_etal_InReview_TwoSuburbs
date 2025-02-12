@@ -4,7 +4,7 @@ library(ggpubr)
 library(viridis)
 
 boot.samps <- 1000 
-load(here("scripts","allBoots_15April.RData"))
+load(here("results","allBoots_15April.RData"))
 
 #########################################################################
 #                                                                       #
@@ -19,6 +19,11 @@ pv.guild.uppr <- apply(pv.guild,c(3,1),function(x)quantile(x,p=0.975,na.rm=TRUE)
 pv.guild.mean.cd <- pv.guild.mean[1:12,]; pv.guild.mean.pcd <- pv.guild.mean[13:24,]
 pv.guild.lowr.cd <- pv.guild.lowr[1:12,]; pv.guild.lowr.pcd <- pv.guild.lowr[13:24,]
 pv.guild.uppr.cd <- pv.guild.uppr[1:12,]; pv.guild.uppr.pcd <- pv.guild.uppr[13:24,]
+
+
+label <- c("Avoiders (8)", "Adapters (8)", "Exploiters (8)", "Community (8)")
+
+
 
 #name all the individual summaries 
 c.guild.mean.cd <- c.guild.mean.pcd <- c.guild.lowr.cd <- c.guild.lowr.pcd <- c.guild.uppr.cd <- c.guild.uppr.pcd <- rep(NA,4)
@@ -41,6 +46,7 @@ scale.max <- c(0.50, 0.50, 0.50, 0.50)
 interval <- c(0.05,0.05,0.05,0.05)
 text.loc <- c(0.45,0.45,0.45,0.45)
 
+
 #set up the plotting functions 
 plot_guilds <- function(i){
   ggplot(data = all.plot.guild) +
@@ -50,7 +56,7 @@ plot_guilds <- function(i){
     geom_ribbon(aes(x=Year,ymin = all.plot.guild[,i+4*4],ymax = all.plot.guild[,i+4*5]), fill = viridis(4,option = "inferno")[3], alpha = 0.3) +
     scale_x_continuous(breaks=seq(1,12,2), limits = c(1,12)) +
     scale_y_continuous(breaks=seq(0,scale.max[i],interval[i]), limits = c(0,scale.max[i])) +
-    geom_text(x=4, y=text.loc[i], size = 6, label=dimnames(pv.guild)[[1]][i]) +
+    geom_text(x=4, y=text.loc[i], size = 6, label = label[i]) + # label=dimnames(pv.guild)[[1]][i]) +
     scale_color_manual(name = "", breaks = c("CD", "PCD"), values = c("CD" = viridis(4,option = "inferno")[1], "PCD" = viridis(4,option = "inferno")[3])) +
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.title.x = element_blank(), axis.title.y = element_blank(),
           panel.background = element_blank(), axis.line = element_line(colour = "black"),text = element_text(size = 16),legend.text = element_text(size=16),legend.key.width = unit(2,"cm"),legend.key = element_blank()) 

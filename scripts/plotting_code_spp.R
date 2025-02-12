@@ -4,7 +4,7 @@ library(ggpubr)
 library(viridis)
 
 boot.samps <- 1000 
-load(here("scripts","allBoots_15April.RData"))
+load(here("results","allBoots_15April.RData"))
 
 #########################################################################
 #                                                                       #
@@ -91,15 +91,28 @@ plot_type2 <- function(i){
           panel.background = element_blank(), axis.line = element_line(colour = "black"),text = element_text(size = 16),legend.text = element_text(size=16),legend.key.width = unit(2,"cm"),legend.key = element_blank()) 
 }
 
+#add best model to names 
+dimnames(pv)[[1]] <- c("AMCR (6)","AMGO (6)","AMRO (8)","ANHU (4)","BARS (8)","BCCH (2)", 
+                       "BEWR (8)","BHCO (6)","BHGR (2)","BRBL (6)","BRCR (8)","BTPI (6)", 
+                       "BTYW (8)","BUSH (2)","CAVI (6)","CBCH (8)","CEDW (8)","DEJU (4)", 
+                       "DOWO","EUST (8)","EVGR (5)","GCKI (8)","HAWO (5)","HOFI (8)", 
+                       "HOSP (4)","HUVI (8)","NOFL (8)","OCWA (8)","OSFL (4)","PAWR (8)", 
+                       "PISI (8)","PSFL (7)","PUFI (8)","RBNU (6)","RBSA (4)","RCKI (2)", 
+                       "ROPI (6)","RUHU (6)","SAVS (3)","SOSP (6)","SPTO (8)","STJA (8)", 
+                       "SWTH (8)","TOWA","VASW","VGSW (8)","WAVI (5)","WCSP (8)", 
+                       "WETA (8)","WEWP (6)","WIFL (6)","WIWA (5)","YRWA (3)")
+
 #######################################################################
 #                                                                     #
 #                         EXPLOITER PLOT                              #
 #                                                                     #
 #######################################################################
 
+exploiter.spp <- c("AMCR (6)","ANHU (4)","BARS (8)","BHCO (6)","EUST (8)","HOFI (8)", "HOSP (4)", "ROPI (6)","RUHU (6)")
+
 
 ##CREATE EXPLOITER.MEMBER AND THEN USE IT TO BUILD EXPLOITER.GG 
-exploiter.spp <- c("AMCR","ANHU","BARS","BHCO","EUST","HOFI","HOSP","ROPI","RUHU")
+#exploiter.spp <- c("AMCR","ANHU","BARS","BHCO","EUST","HOFI","HOSP","ROPI","RUHU")
 exploiter.member <- rep(NA,length(exploiter.spp))
 for(i in 1:length(exploiter.spp)){
   if(is.element(exploiter.spp[i],names(plot_type_1))==TRUE){
@@ -122,8 +135,10 @@ annotate_figure(exploiter.gg,
 #######################################################################
 
 
+adaptor.spp <- c("AMGO (6)","AMRO (8)","BCCH (2)","BEWR (8)","BHGR (2)","BRBL (6)","BTPI (6)","BUSH (2)","CAVI (6)","CEDW (8)","DEJU (4)","EVGR (5)","NOFL (8)","OCWA (8)","OSFL (4)","PISI (8)","SAVS (3)","SOSP (6)","SPTO (8)","VASW","VGSW (8)","WAVI (5)","WCSP (8)","WEWP (6)","WIFL (6)","YRWA (3)")
+
 ##CREATE ADAPTOR.MEMBER AND THEN USE IT TO BUILD EXPLOITER.GG 
-adaptor.spp <- c("AMGO","AMRO","BCCH","BEWR","BHGR","BRBL","BTPI","BUSH","CAVI","CEDW","DEJU","EVGR","NOFL","OSFL","OCWA","PISI","SAVS","SOSP","SPTO","VASW","VGSW","WAVI","WCSP","WEWP","WIFL","YRWA")
+#adaptor.spp <- c("AMGO","AMRO","BCCH","BEWR","BHGR","BRBL","BTPI","BUSH","CAVI","CEDW","DEJU","EVGR","NOFL","OCWA","OSFL","PISI","SAVS","SOSP","SPTO","VASW","VGSW","WAVI","WCSP","WEWP","WIFL","YRWA")
 adaptor.member <- rep(NA,length(adaptor.spp))
 for(i in 1:length(adaptor.spp)){
   if(is.element(adaptor.spp[i],names(plot_type_1))==TRUE){
@@ -146,9 +161,10 @@ annotate_figure(adaptor.gg,
 #                                                                     #
 #######################################################################
 
+avoider.spp <- c("BRCR (8)","BTYW (8)","CBCH (8)","DOWO","GCKI (8)","HAWO (5)","HUVI (8)","PAWR (8)","PSFL (7)","PUFI (8)","RBNU (6)","RBSA (4)","RCKI (2)","STJA (8)","SWTH (8)","TOWA","WETA (8)","WIWA (5)")
 
 ##CREATE EXPLOITER.MEMBER AND THEN USE IT TO BUILD EXPLOITER.GG 
-avoider.spp <- c("BRCR","BTYW","CBCH","DOWO","GCKI","HAWO","HUVI","PAWR","PSFL","PUFI","RBNU","RBSA","RCKI","STJA","SWTH","TOWA","WETA","WIWA")
+#avoider.spp <- c("BRCR","BTYW","CBCH","DOWO","GCKI","HAWO","HUVI","PAWR","PSFL","PUFI","RBNU","RBSA","RCKI","STJA","SWTH","TOWA","WETA","WIWA")
 avoider.member <- rep(NA,length(avoider.spp))
 for(i in 1:length(avoider.spp)){
   if(is.element(avoider.spp[i],names(plot_type_1))==TRUE){
