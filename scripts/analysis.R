@@ -11,7 +11,7 @@ library(stringr)
 #########################################################################
 
 #read in the data 
-bird.data <- read.csv(here("data","Bird_Data_SC_Stats.csv")) 
+bird.data <- read.csv(here("data","Bird_Data.csv")) 
 
 #clean some things up 
 bird.data$Site[which(bird.data$Site == "Issaquah highlands")] <- "Issaquah Highlands"

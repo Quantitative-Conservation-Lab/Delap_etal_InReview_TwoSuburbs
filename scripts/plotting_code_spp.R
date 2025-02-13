@@ -72,7 +72,7 @@ plot_type1 <- function(i){
   geom_line(aes(x=Year,y = rep(-4,12),col="Combined")) +  #this is Junk
   scale_x_continuous(breaks=seq(1,12,2), limits = c(1,12)) +
   scale_y_continuous(breaks=seq(0,1,0.25), limits = c(0,1)) +
-  geom_text(x=4, y=0.9, size = 4, label=dimnames(pv)[[1]][i]) +
+  geom_text(x=7, y=0.9, size = 3.5, label=dimnames(pv)[[1]][i]) +
   scale_color_manual(name = "", breaks = c("CD", "PCD", "Combined"), values = c("CD" = viridis(4,option = "inferno")[1], "PCD" = viridis(4,option = "inferno")[3], "Combined" = viridis(4,option = "mako")[3])) +
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.title.x = element_blank(), axis.title.y = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black"),text = element_text(size = 16),legend.text = element_text(size=16),legend.key.width = unit(2,"cm"),legend.key = element_blank()) 
@@ -85,22 +85,22 @@ plot_type2 <- function(i){
     geom_ribbon(aes(x=Year,ymin = all.plot[,i+53],ymax = all.plot[,i+53*2]), fill = viridis(4,option = "mako")[3], alpha = 0.4) +
     scale_x_continuous(breaks=seq(1,12,2), limits = c(1,12)) +
     scale_y_continuous(breaks=seq(0,1,0.25), limits = c(0,1)) +
-    geom_text(x=4, y=0.9, size = 4, label=dimnames(pv)[[1]][i]) +
+    geom_text(x=7, y=0.9, size = 3.5, label=dimnames(pv)[[1]][i]) +
     scale_color_manual(name = "", breaks = c("CD", "PCD", "Combined"), values = c("CD" = viridis(4,option = "inferno")[1], "PCD" = viridis(4,option = "inferno")[3], "Combined" = viridis(4,option = "mako")[3])) +
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.title.x = element_blank(), axis.title.y = element_blank(),
           panel.background = element_blank(), axis.line = element_line(colour = "black"),text = element_text(size = 16),legend.text = element_text(size=16),legend.key.width = unit(2,"cm"),legend.key = element_blank()) 
 }
 
 #add best model to names 
-dimnames(pv)[[1]] <- c("AMCR (6)","AMGO (6)","AMRO (8)","ANHU (4)","BARS (8)","BCCH (2)", 
-                       "BEWR (8)","BHCO (6)","BHGR (2)","BRBL (6)","BRCR (8)","BTPI (6)", 
-                       "BTYW (8)","BUSH (2)","CAVI (6)","CBCH (8)","CEDW (8)","DEJU (4)", 
-                       "DOWO","EUST (8)","EVGR (5)","GCKI (8)","HAWO (5)","HOFI (8)", 
-                       "HOSP (4)","HUVI (8)","NOFL (8)","OCWA (8)","OSFL (4)","PAWR (8)", 
-                       "PISI (8)","PSFL (7)","PUFI (8)","RBNU (6)","RBSA (4)","RCKI (2)", 
-                       "ROPI (6)","RUHU (6)","SAVS (3)","SOSP (6)","SPTO (8)","STJA (8)", 
-                       "SWTH (8)","TOWA","VASW","VGSW (8)","WAVI (5)","WCSP (8)", 
-                       "WETA (8)","WEWP (6)","WIFL (6)","WIWA (5)","YRWA (3)")
+dimnames(pv)[[1]] <- c("American Crow (6)","American Goldfinch (6)","American Robin (8)","Anna's Hummingbird (4)","Barn Swallow (8)","Black-capped Chickadee (2)", 
+                       "Bewick's Wren (8)","Brown-headed Cowbird (6)","Black-headed Grosbeak (2)","BRBL (6)","Brown Creeper (8)","BTPI (6)", 
+                       "Black-throated Gray Warbler (8)","Bushtittit (2)","CAVI (6)","Chestnut-backed Chickadee (8)","Cedar Waxwing (8)","Dark-eyed Junco (4)", 
+                       "DOWO","European Starling (8)","EVGR (5)","Golden-crowned Kinglet (8)","Hairy Woodpecker (5)","House Finch (8)", 
+                       "House Sparrow (4)","Hutton's Vireo (8)","Northern Flicker (8)","Orange-crowned Warbler (8)","OSFL (4)","Pacific Wren (8)", 
+                       "Pine Siskin (8)","Pacific-slope Flycatcher (7)","Purple Finch (8)","Red-breasted Nuthatch (6)","Red-breasted Sapsucker (4)","Ruby-crowned Kinglet (2)", 
+                       "Rock Pigeon (6)","Rufous Hummingbird (6)","Savannah Sparrow (3)","Song Sparrow (6)","Spotted Towhee (8)","Steller's Jay (8)", 
+                       "Swainson's Thrush (8)","TOWA","VASW","Violet-green Swallow (8)","Warbling Vireo (5)","White-crowned Sparrow (8)", 
+                       "Western Tanager (8)","WEWP (6)","Willow Flycatcher (6)","Wilson's Warbler (5)","Yellow-rumped Warbler (3)")
 
 #######################################################################
 #                                                                     #
@@ -108,11 +108,11 @@ dimnames(pv)[[1]] <- c("AMCR (6)","AMGO (6)","AMRO (8)","ANHU (4)","BARS (8)","B
 #                                                                     #
 #######################################################################
 
-exploiter.spp <- c("AMCR (6)","ANHU (4)","BARS (8)","BHCO (6)","EUST (8)","HOFI (8)", "HOSP (4)", "ROPI (6)","RUHU (6)")
+exploiter.spp <- c("American Crow (6)","Anna's Hummingbird (4)","Barn Swallow (8)","Brown-headed Cowbird (6)","European Starling (8)","House Finch (8)", "House Sparrow (4)", "Rock Pigeon (6)","Rufous Hummingbird (6)")
 
 
 ##CREATE EXPLOITER.MEMBER AND THEN USE IT TO BUILD EXPLOITER.GG 
-#exploiter.spp <- c("AMCR","ANHU","BARS","BHCO","EUST","HOFI","HOSP","ROPI","RUHU")
+#exploiter.spp <- c("American Crow","Anna's Hummingbird","Barn Swallow","Brown-headed Cowbird","European Starling","House Finch","House Sparrow","Rock Pigeon","Rufous Hummingbird")
 exploiter.member <- rep(NA,length(exploiter.spp))
 for(i in 1:length(exploiter.spp)){
   if(is.element(exploiter.spp[i],names(plot_type_1))==TRUE){
@@ -135,10 +135,10 @@ annotate_figure(exploiter.gg,
 #######################################################################
 
 
-adaptor.spp <- c("AMGO (6)","AMRO (8)","BCCH (2)","BEWR (8)","BHGR (2)","BRBL (6)","BTPI (6)","BUSH (2)","CAVI (6)","CEDW (8)","DEJU (4)","EVGR (5)","NOFL (8)","OCWA (8)","OSFL (4)","PISI (8)","SAVS (3)","SOSP (6)","SPTO (8)","VASW","VGSW (8)","WAVI (5)","WCSP (8)","WEWP (6)","WIFL (6)","YRWA (3)")
+adaptor.spp <- c("American Goldfinch (6)","American Robin (8)","Black-capped Chickadee (2)","Bewick's Wren (8)","Black-headed Grosbeak (2)","BRBL (6)","BTPI (6)","Bushtittit (2)","CAVI (6)","Cedar Waxwing (8)","Dark-eyed Junco (4)","EVGR (5)","Northern Flicker (8)","Orange-crowned Warbler (8)","OSFL (4)","Pine Siskin (8)","Savannah Sparrow (3)","Song Sparrow (6)","Spotted Towhee (8)","VASW","Violet-green Swallow (8)","Warbling Vireo (5)","White-crowned Sparrow (8)","WEWP (6)","Willow Flycatcher (6)","Yellow-rumped Warbler (3)")
 
 ##CREATE ADAPTOR.MEMBER AND THEN USE IT TO BUILD EXPLOITER.GG 
-#adaptor.spp <- c("AMGO","AMRO","BCCH","BEWR","BHGR","BRBL","BTPI","BUSH","CAVI","CEDW","DEJU","EVGR","NOFL","OCWA","OSFL","PISI","SAVS","SOSP","SPTO","VASW","VGSW","WAVI","WCSP","WEWP","WIFL","YRWA")
+#adaptor.spp <- c("American Goldfinch","American Robin","Black-capped Chickadee","Bewick's Wren","Black-headed Grosbeak","BRBL","BTPI","Bushtittit","CAVI","Cedar Waxwing","Dark-eyed Junco","EVGR","Northern Flicker","Orange-crowned Warbler","OSFL","Pine Siskin","Savannah Sparrow","Song Sparrow","Spotted Towhee","VASW","Violet-green Swallow","Warbling Vireo","White-crowned Sparrow","WEWP","Willow Flycatcher","Yellow-rumped Warbler")
 adaptor.member <- rep(NA,length(adaptor.spp))
 for(i in 1:length(adaptor.spp)){
   if(is.element(adaptor.spp[i],names(plot_type_1))==TRUE){
@@ -161,10 +161,10 @@ annotate_figure(adaptor.gg,
 #                                                                     #
 #######################################################################
 
-avoider.spp <- c("BRCR (8)","BTYW (8)","CBCH (8)","DOWO","GCKI (8)","HAWO (5)","HUVI (8)","PAWR (8)","PSFL (7)","PUFI (8)","RBNU (6)","RBSA (4)","RCKI (2)","STJA (8)","SWTH (8)","TOWA","WETA (8)","WIWA (5)")
+avoider.spp <- c("Brown Creeper (8)","Black-throated Gray Warbler (8)","Chestnut-backed Chickadee (8)","DOWO","Golden-crowned Kinglet (8)","Hairy Woodpecker (5)","Hutton's Vireo (8)","Pacific Wren (8)","Pacific-slope Flycatcher (7)","Purple Finch (8)","Red-breasted Nuthatch (6)","Red-breasted Sapsucker (4)","Ruby-crowned Kinglet (2)","Steller's Jay (8)","Swainson's Thrush (8)","TOWA","Western Tanager (8)","Wilson's Warbler (5)")
 
 ##CREATE EXPLOITER.MEMBER AND THEN USE IT TO BUILD EXPLOITER.GG 
-#avoider.spp <- c("BRCR","BTYW","CBCH","DOWO","GCKI","HAWO","HUVI","PAWR","PSFL","PUFI","RBNU","RBSA","RCKI","STJA","SWTH","TOWA","WETA","WIWA")
+#avoider.spp <- c("Brown Creeper","Black-throated Gray Warbler","Chestnut-backed Chickadee","DOWO","Golden-crowned Kinglet","Hairy Woodpecker","Hutton's Vireo","Pacific Wren","Pacific-slope Flycatcher","Purple Finch","Red-breasted Nuthatch","Red-breasted Sapsucker","Ruby-crowned Kinglet","Steller's Jay","Swainson's Thrush","TOWA","Western Tanager","Wilson's Warbler")
 avoider.member <- rep(NA,length(avoider.spp))
 for(i in 1:length(avoider.spp)){
   if(is.element(avoider.spp[i],names(plot_type_1))==TRUE){
