@@ -4,13 +4,15 @@ library(MCMCvis)
 library(coda)
 
 
+start.time <- Sys.time() 
+
 # MCMC settings
 ni <- 40000
-nt <- 1
+nt <- 3
 nb <- 5000
 nc <- 3
 
-tot.samples <- (ni-nb)*nc
+tot.samples <- floor((ni-nb)/nt)*nc
 
 #import data 
 data1 <- read.csv("data/bird.binary.noCorrRes.csv") 
@@ -53,11 +55,11 @@ array2[is.na(array2==TRUE)] <- 0
 results.mat <- matrix(NA,nrow=length(Species),ncol = 106)
 
 #save all the samples from stochastic realizations 
-z.pred <- array(NA,dim=c(length(Species),tot.samples,24))
+z.pred <- array(NA,dim=c(length(Species),tot.samples,24,10))
 
 
 #loop through species 
-for(i in 1:4){ #length(Species)){
+for(i in 1:length(Species)){
 
 #pull out data for single species analysis
 spp.i <- array2[,,i,]
@@ -200,22 +202,25 @@ results.mat[i,105] <- out$WAIC$WAIC
 #R-hat 
 results.mat[i,106] <- gelman.diag(out$samples[,c(1:2)],multivariate=TRUE)$mpsrf
 
-results.mat[i,107] <- length(warnings)
-  
 for(s in 1:nrow(out.all)){
   for(j in 1:24){
-    z.pred[i,s,j] <- rbinom(1,1,out.all[s,j])
+    for(k in 1:10){
+      z.pred[i,s,j,k] <- rbinom(1,1,out.all[s,j])
+    }
   }
 }
 
+print(i)
 }
 
-colnames(results.mat) <- c(paste(params,"-mean",sep=""),paste(params,"-sd",sep=""),paste(params,"-LCI",sep=""),paste(params,"-UCI",sep=""),"WAIC","R-hat")
+colnames(results.mat) <- c(paste(params[1:24],".mean",sep=""),paste(params[1:24],".sd",sep=""),paste(params[1:24],".LCI",sep=""),paste(params[1:24],".UCI",sep=""),paste(params[25:26],".mean",sep=""),paste(params[25:26],".sd",sep=""),paste(params[25:26],".LCI",sep=""),paste(params[25:26],".UCI",sep=""),"WAIC","R.hat")
 
-all.species <- matrix(NA,nrow=nrow(out.all),ncol=24)
+all.species <- apply(z.pred,c(2,3,4),sum)
 
-for(s in 1:nrow(out.all)){
-  for(j in 1:24){
-    all.species[s,j] <- apply(z.pred,c(2,3),sum)
-  }
-}
+write.csv(results.mat,"results/occ_model1_results.csv")
+write.csv(all.species,"results/occ_model1_allspp.csv")
+
+end.time <- Sys.time() 
+
+elapsed <- end.time - start.time 
+

@@ -3,6 +3,17 @@ library(nimble)
 library(MCMCvis)
 library(coda)
 
+
+start.time <- Sys.time() 
+
+# MCMC settings
+ni <- 40000
+nt <- 3
+nb <- 5000
+nc <- 3
+
+tot.samples <- floor((ni-nb)/nt)*nc
+
 #import data 
 data1 <- read.csv("data/bird.binary.noCorrRes.csv") 
 
@@ -43,8 +54,12 @@ array2[is.na(array2==TRUE)] <- 0
 #columns are mean predictions site type CD 1:12, mean predictions site type PCD 1:12, sd predictions, LCI predictions, UCI predictions, WAIC, multivariate R-hat, coefficients, sd coefficience, LCI coefficients, UCI coefficients 
 results.mat <- matrix(NA,nrow=length(Species),ncol = 118)
 
+#save all the samples from stochastic realizations 
+z.pred <- array(NA,dim=c(length(Species),tot.samples,24,10))
+
+
 #loop through species 
-for(i in 1:2){  #length(Species)){
+for(i in 1:length(Species)){
 
 #pull out data for single species analysis
 spp.i <- array2[,,i,]
@@ -148,12 +163,6 @@ inits <- list(z=z.init)
 # Parameters monitored
 params <- c("psi.pred","int.p","int.psi","beta.site.type","beta.year","beta.site.type.year")
 
-# MCMC settings
-ni <- 30000
-nt <- 1
-nb <- 5000
-nc <- 3
-
 Rmodel1 <- nimbleModel(code = occ1, constants = constants, data = data,
                        check = FALSE, calculate = FALSE, inits = inits)
 conf1 <- configureMCMC(Rmodel1, monitors = params, thin = nt, useConjugacy = FALSE, enableWAIC=TRUE)
@@ -199,12 +208,28 @@ results.mat[i,117] <- out$WAIC$WAIC
 #R-hat 
 results.mat[i,118] <- gelman.diag(out$samples[,c(2,4,5,6,7)],multivariate=TRUE)$mpsrf
 
-
+for(s in 1:nrow(out.all)){
+  for(j in 1:24){
+    for(k in 1:10){
+      z.pred[i,s,j,k] <- rbinom(1,1,out.all[s,j])
+    }
+  }
 }
 
-colnames(results.mat) <- c(paste(params,"-mean",sep=""),paste(params,"-sd",sep=""),paste(params,"-LCI",sep=""),paste(params,"-UCI",sep=""),"WAIC","R-hat")
+print(i)
+}
+
+colnames(results.mat) <- c(paste(params[1:24],".mean",sep=""),paste(params[1:24],".sd",sep=""),paste(params[1:24],".LCI",sep=""),paste(params[1:24],".UCI",sep=""),paste(params[25:29],".mean",sep=""),paste(params[25:29],".sd",sep=""),paste(params[25:29],".LCI",sep=""),paste(params[25:29],".UCI",sep=""),"WAIC","R.hat")
+
+all.species <- apply(z.pred,c(2,3,4),sum)
 
 
+write.csv(results.mat,"results/occ_model7_results.csv")
+write.csv(all.species,"results/occ_model7_allspp.csv")
 
 
+end.time <- Sys.time() 
+
+elapsed <- end.time - start.time 
+elapsed
 
