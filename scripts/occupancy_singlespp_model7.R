@@ -88,13 +88,13 @@ for(s in 1:n.sites){
 
     logit(p[s,y]) <- int.p + p.ran.site[s] + p.ran.year[y]
       
-    logit(psi[s,y]) <- int.psi + beta.site.type[site.type[s]] + beta.year*y + beta.site.type.year[site.type[s]]*y
+    logit(psi[s,y]) <- int.psi + beta.site.type[site.type[s]] + beta.year*year.norm[y] + beta.site.type.year[site.type[s]]*year.norm[y]
   }
 }
   
 for(s in 1:2){
   for(y in 1:n.years){
-    psi.pred[s,y] <- 1/(1+exp(-(int.psi + beta.site.type[site.type[s]] + beta.year*y + beta.site.type.year[site.type[s]]*y)))
+    psi.pred[s,y] <- 1/(1+exp(-(int.psi + beta.site.type[site.type[s]] + beta.year*year.norm[y] + beta.site.type.year[site.type[s]]*year.norm[y])))
   }
 } 
   
@@ -135,8 +135,10 @@ data <- list(spp.i=spp.i)
 n.sites <- dim(spp.i)[1]
 n.years <- dim(spp.i)[2]
 n.reps <- dim(spp.i)[3]
+year.norm <- (c(1:12) - mean(c(1:12)))/sd(c(1:12))
+year2.norm <- pow(year.norm,2)
 
-constants <- list(eff.i=eff.i,site.type=site.type,n.sites=n.sites,n.years=n.years,n.reps=n.reps)
+constants <- list(eff.i=eff.i,site.type=site.type,year.norm=year.norm,year2.norm=year2.norm,n.sites=n.sites,n.years=n.years,n.reps=n.reps)
 
 ######################################################################
 #                                                                    #  
