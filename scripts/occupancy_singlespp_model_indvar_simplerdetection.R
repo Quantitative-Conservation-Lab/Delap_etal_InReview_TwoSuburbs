@@ -102,16 +102,20 @@ p.site.type[1] ~ dnorm(0,sd=1)
 p.site.type[2] <- -1*p.site.type[1]
 sd.year ~ dgamma(1,1)
 
-w.sitetype ~ dbern(2/3)
-w.year ~ dbern(1/2)
-w.year2 <- w.year*w.yearsq
+w.sitetype ~ dbern(1/2)
+w.year ~ dbern(2/3)
 w.yearsq ~ dbern(1/2)
+w.year2 <- w.year*w.yearsq
 
-int.psi ~ dnorm(0,sd=1)
+int.psi ~ dnorm(0,tau.param)
 beta.site.type[1] <- 0
-beta.site.type[2] ~ dnorm(0,sd=1)
-beta.year ~ dnorm(0,sd=1)
-beta.year2 ~ dnorm(0,sd=1)
+beta.site.type[2] ~ dnorm(0,tau.param)
+beta.year ~ dnorm(0,tau.param)
+beta.year2 ~ dnorm(0,tau.param)
+
+var.total ~ dgamma(1,1)
+K <- 1 + w.sitetype + w.year + w.year2
+tau.param <- K/var.total
 
 })
 
@@ -157,7 +161,7 @@ inits <- list(z=z.init)
 ######################################################################
 
 # Parameters monitored
-params <- c("int.p","int.psi","beta.site.type","beta.year","beta.year2","w.sitetype","w.year","w.year2") 
+params <- c("int.p","p.site.type","sd.year","int.psi","beta.site.type","beta.year","beta.year2","w.sitetype","w.year","w.year2") 
 
 Rmodel1 <- nimbleModel(code = occ1, constants = constants, data = data,
                        check = FALSE, calculate = FALSE, inits = inits)
@@ -172,7 +176,7 @@ out <- runMCMC(Cmcmc1, niter = ni, nburnin = nb , nchains = nc, inits = inits,
 
 out.all <- rbind(out$samples$chain1,out$samples$chain2,out$samples$chain3)
 
-R.hat[i] <- gelman.diag(out$samples[,c(2,3,4,5,6,7,8)],multivariate=TRUE)$mpsrf
+R.hat[i] <- gelman.diag(out$samples[,c(2,3,4,5,6,7,9,10,11,12)],multivariate=TRUE)$mpsrf
 
 write.csv(out.all,paste("results/occ.",spp.names[i], ".csv",sep=""))
 
