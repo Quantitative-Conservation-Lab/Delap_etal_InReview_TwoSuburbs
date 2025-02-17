@@ -7,9 +7,9 @@ library(coda)
 start.time <- Sys.time() 
 
 # MCMC settings
-ni <- 40000
-nt <- 1
-nb <- 5000
+ni <- 80000
+nt <- 2
+nb <- 10000
 nc <- 3
 
 #import data 
