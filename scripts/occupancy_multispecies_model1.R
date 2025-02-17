@@ -66,11 +66,11 @@ for(s in 1:n.sites){
   for(y in 1:n.years){
     for(k in 1:n.species){
       # State Process  
-        z[s,y,k] ~ dbern(psi[s,y,k])
-        # Observation Process  
-        for(n in 1:n.reps) {
-          array2[s,y,k,n] ~ dbern(z[s,y,k] * p[s,y,k] * array.eff[s,y,k,n])  #state * p * effort (0 or 1)
-        }#n replicate
+      z[s,y,k] ~ dbern(psi[s,y,k])
+      # Observation Process  
+      for(n in 1:n.reps) {
+        array2[s,y,k,n] ~ dbern(z[s,y,k] * p[s,y,k] * array.eff[s,y,k,n])  #state * p * effort (0 or 1)
+      }#n replicate
       #models on p and psi
       logit(p[s,y,k]) <- int.p + p.ran.site[s] + p.ran.year[y] + p.ran.species[k]
       
@@ -82,7 +82,7 @@ for(s in 1:n.sites){
 for(s in 1:2){
   for(y in 1:n.years){
     for(k in 1:n.species){
-      psi.pred[s,y,k] <- 1/(1+exp(-(int.psi)))
+      psi.pred[s,y,k] <- 1/(1+exp(-(int.psi + psi.ran.species[k])))
     }  
   }
 } 
@@ -103,8 +103,9 @@ int.p ~ dnorm(0,sd=1)
 sd.site ~ dgamma(1,1)
 sd.year ~ dgamma(1,1)
 sd.species ~ dgamma(1,1)
-sd.psi.species ~ dgamma(1,1)
+
 int.psi ~ dnorm(0,sd=1)
+sd.psi.species ~ dgamma(1,1)
 
 })
 
@@ -153,7 +154,7 @@ inits <- list(z=z.init)
 ######################################################################
 
 # Parameters monitored
-params <- c("psi.pred","int.p","int.psi")
+params <- c("psi.pred","int.psi","psi.ran.species")
 
 Rmodel1 <- nimbleModel(code = occ1, constants = constants, data = data,
                        check = FALSE, calculate = FALSE, inits = inits)
@@ -208,11 +209,9 @@ for(s in 1:nrow(out.all)){
   }
 }
 
-
-
 colnames(results.mat) <- c(paste(params[1:24],".mean",sep=""),paste(params[1:24],".sd",sep=""),paste(params[1:24],".LCI",sep=""),paste(params[1:24],".UCI",sep=""),paste(params[25:26],".mean",sep=""),paste(params[25:26],".sd",sep=""),paste(params[25:26],".LCI",sep=""),paste(params[25:26],".UCI",sep=""),"WAIC","R.hat")
 
-write.csv(results.mat,"results/occ_model1_results.csv")
+write.csv(results.mat,"results/occ_model_all_results.csv")
 
 end.time <- Sys.time() 
 
