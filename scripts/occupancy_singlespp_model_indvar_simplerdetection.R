@@ -76,46 +76,41 @@ for(s in 1:n.sites) {
       for(n in 1:n.reps) {
         spp.i[s,y,n] ~ dbern(z[s,y] * p[s,y] * eff.i[s,y,n])  #state * p * effort (0 or 1)
       }#n replicate
+    
+    #observation model
+    logit(p[s,y]) <- int.p + p.site.type[site.type[s]] + p.ran.year[y]
+    
+    #occupancy model 
+    logit(psi[s,y]) <- int.psi + w.sitetype*beta.site.type[site.type[s]] + w.year*beta.year*year.norm[y] + w.year2*beta.year2*year2.norm[y] 
   }#y year
 }#j site 
 
 
-#model on detection
-#model on occupancy 
-for(s in 1:n.sites){
-  for(y in 1:n.years){
-
-    logit(p[s,y]) <- int.p + p.site.type[site.type[s]] + p.ran.year[y]
-      
-    logit(psi[s,y]) <- int.psi + w.sitetype*beta.site.type[site.type[s]] + w.year*beta.year*year.norm[y] + w.year2*beta.year2*year2.norm[y] 
-  }
-}
-
 #Random effects 
 for(y in 1:n.years){
-  p.ran.year[y] ~ dnorm(0,sd = sd.year)
+  p.ran.year[y] ~ dnorm(0,var = var.p.year)
 }
   
 #Priors 
 int.p ~ dnorm(0,sd=1)
 p.site.type[1] ~ dnorm(0,sd=1)
 p.site.type[2] <- -1*p.site.type[1]
-sd.year ~ dgamma(1,1)
+var.p.year ~ dgamma(1,1)
 
 w.sitetype ~ dbern(1/2)
 w.year ~ dbern(2/3)
 w.yearsq ~ dbern(1/2)
 w.year2 <- w.year*w.yearsq
 
-int.psi ~ dnorm(0,tau.param)
+int.psi ~ dnorm(0,var = var.param)
 beta.site.type[1] <- 0
-beta.site.type[2] ~ dnorm(0,tau.param)
-beta.year ~ dnorm(0,tau.param)
-beta.year2 ~ dnorm(0,tau.param)
+beta.site.type[2] ~ dnorm(0,var = var.param)
+beta.year ~ dnorm(0,var = var.param)
+beta.year2 ~ dnorm(0,var = var.param)
 
-var.total ~ dgamma(1,1)
+var.total ~ dgamma(3.289,7.8014)
 K <- 1 + w.sitetype + w.year + w.year2
-tau.param <- K/var.total
+var.param <- var.total/K
 
 })
 
@@ -161,7 +156,7 @@ inits <- list(z=z.init)
 ######################################################################
 
 # Parameters monitored
-params <- c("int.p","p.site.type","sd.year","int.psi","beta.site.type","beta.year","beta.year2","w.sitetype","w.year","w.year2") 
+params <- c("int.p","p.site.type","var.p.year","int.psi","beta.site.type","beta.year","beta.year2","w.sitetype","w.year","w.year2") 
 
 Rmodel1 <- nimbleModel(code = occ1, constants = constants, data = data,
                        check = FALSE, calculate = FALSE, inits = inits)
@@ -178,12 +173,12 @@ out.all <- rbind(out$samples$chain1,out$samples$chain2,out$samples$chain3)
 
 R.hat[i] <- gelman.diag(out$samples[,c(2,3,4,5,6,7,9,10,11,12)],multivariate=TRUE)$mpsrf
 
-write.csv(out.all,paste("results/occ.",spp.names[i], ".csv",sep=""))
+write.csv(out.all,paste("results/occ_run2.",spp.names[i], ".csv",sep=""))
 
 print(i)
 
 }
-
+(elapsed <- Sys.time() - start.time)
 
 R.hat 
 
