@@ -7,9 +7,9 @@ library(coda)
 start.time <- Sys.time() 
 
 # MCMC settings
-ni <- 40000
+ni <- 80000
 nt <- 1
-nb <- 5000
+nb <- 10000
 nc <- 3
 
 #import data 
@@ -81,35 +81,35 @@ for(s in 1:n.sites) {
 
 #Random effects 
 for(y in 1:n.years){
-  p.ran.year[y] ~ dnorm(0,sd = sd.year)
+  p.ran.year[y] ~ dnorm(0,var=var.p.year)
 }
 for(k in 1:n.species){
-  p.ran.species ~ dnorm(0,sd=sd.species)
-  psi.ran.species ~ dnorm(0,sd=sd.psi.species)
+  p.ran.species[k] ~ dnorm(0,var=var.p.species)
+  psi.ran.species[k] ~ dnorm(0,var=var.psi.species)
 }
     
 #Priors 
 int.p ~ dnorm(0,sd=1)
 p.site.type[1] ~ dnorm(0,sd=1)
 p.site.type[2] <- -1*p.site.type[1]
-sd.year ~ dgamma(1,1)
-sd.species ~ dgamma(1,1)
+var.p.year ~ dgamma(1,1)
+var.p.species ~ dgamma(1,1)
 
 w.sitetype ~ dbern(1/2)
 w.year ~ dbern(2/3)
 w.yearsq ~ dbern(1/2)
 w.year2 <- w.year*w.yearsq
 
-int.psi ~ dnorm(0,tau.param)
+int.psi ~ dnorm(0,var.param)
 beta.site.type[1] <- 0
-beta.site.type[2] ~ dnorm(0,tau.param)
-beta.year ~ dnorm(0,tau.param)
-beta.year2 ~ dnorm(0,tau.param)
-sd.psi.species ~ dgamma(1,1)
+beta.site.type[2] ~ dnorm(0,var.param)
+beta.year ~ dnorm(0,var.param)
+beta.year2 ~ dnorm(0,var.param)
+var.psi.species ~ dgamma(1,1)
 
-var.total ~ dgamma(1,1)
+var.total ~ dgamma(3.289,7.8014)
 K <- 1 + w.sitetype + w.year + w.year2
-tau.param <- K/var.total
+var.param <- var.total/K
 
 })
 
@@ -126,12 +126,12 @@ data <- list(array2=array2)
 #get constants 
 n.sites <- dim(array2)[1]
 n.years <- dim(array2)[2]
-n.reps <- dim(array2)[3]
-n.species <- dim(array2)[4]
+n.species <- dim(array2)[3]
+n.reps <- dim(array2)[4]
 year.norm <- (c(1:12) - mean(c(1:12)))/sd(c(1:12))
 year2.norm <- pow(year.norm,2)
 
-constants <- list(array.eff=array.eff,site.type=site.type,year.norm=year.norm,year2.norm=year2.norm,n.sites=n.sites,n.years=n.years,n.reps=n.reps)
+constants <- list(array.eff=array.eff,site.type=site.type,year.norm=year.norm,year2.norm=year2.norm,n.sites=n.sites,n.years=n.years,n.species=n.species,n.reps=n.reps)
 
 ######################################################################
 #                                                                    #  
@@ -143,7 +143,7 @@ z.init <- array(0,dim=c(n.sites,n.years,n.species))
 for(s in 1:n.sites){
   for(y in 1:n.years){
     for(k in 1:n.species){
-      if(any(spp.i[s,y,k]==1)){
+      if(any(array2[s,y,k,]==1)){
         z.init[s,y,k] <- 1 
       }
     }  
@@ -158,7 +158,7 @@ inits <- list(z=z.init)
 ######################################################################
 
 # Parameters monitored
-params <- c("int.p","p.site.type","sd.year","sd.species","int.psi","beta.site.type","beta.year","beta.year2","sd.psi.species","w.sitetype","w.year","w.year2") 
+params <- c("int.p","p.site.type","var.p.year","var.p.species","int.psi","beta.site.type","beta.year","beta.year2","var.psi.species","w.sitetype","w.year","w.year2") 
 
 Rmodel1 <- nimbleModel(code = occ1, constants = constants, data = data,
                        check = FALSE, calculate = FALSE, inits = inits)
@@ -178,8 +178,6 @@ R.hat[i] <- gelman.diag(out$samples[,c(2,3,4,5,6,7,9,10,11,12)],multivariate=TRU
 write.csv(out.all,paste("results/occ.",spp.names[i], ".csv",sep=""))
 
 print(i)
-
-}
 
 
 R.hat 
