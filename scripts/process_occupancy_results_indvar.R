@@ -160,13 +160,13 @@ preds <- array(NA,dim=c(dim(results)[1],24,dim(results)[3]))
 preds <- best.preds(best.model,best.params,covars)
 
 preds.out <- matrix(NA,12,dim(preds)[3]*6+1)
-preds.out[,1:29] <- apply(preds,c(2,3),function(x)mean(x,na.rm=TRUE))[1:12,]
-preds.out[,30:58] <- apply(preds,c(2,3),function(x)quantile(x,probs=0.025,na.rm=TRUE))[1:12,]
-preds.out[,59:87] <- apply(preds,c(2,3),function(x)quantile(x,probs=0.975,na.rm=TRUE))[1:12,]
-preds.out[,88:116] <- apply(preds,c(2,3),function(x)mean(x,na.rm=TRUE))[13:24,]
-preds.out[,117:145] <- apply(preds,c(2,3),function(x)quantile(x,probs=0.025,na.rm=TRUE))[13:24,]
-preds.out[,146:174] <- apply(preds,c(2,3),function(x)quantile(x,probs=0.975,na.rm=TRUE))[13:24,]
-preds.out[,175] <- c(1:12)
+preds.out[,1:43] <- apply(preds,c(2,3),function(x)mean(x,na.rm=TRUE))[1:12,]
+preds.out[,44:86] <- apply(preds,c(2,3),function(x)quantile(x,probs=0.025,na.rm=TRUE))[1:12,]
+preds.out[,87:129] <- apply(preds,c(2,3),function(x)quantile(x,probs=0.975,na.rm=TRUE))[1:12,]
+preds.out[,130:172] <- apply(preds,c(2,3),function(x)mean(x,na.rm=TRUE))[13:24,]
+preds.out[,173:215] <- apply(preds,c(2,3),function(x)quantile(x,probs=0.025,na.rm=TRUE))[13:24,]
+preds.out[,216:258] <- apply(preds,c(2,3),function(x)quantile(x,probs=0.975,na.rm=TRUE))[13:24,]
+preds.out[,259] <- c(1:12)
 
 ###PLOTTING CODE 
 
