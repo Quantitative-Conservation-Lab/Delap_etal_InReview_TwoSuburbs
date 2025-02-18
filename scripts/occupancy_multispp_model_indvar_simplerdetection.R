@@ -162,14 +162,14 @@ params <- c("int.p","p.site.type","sd.year","sd.species","int.psi","beta.site.ty
 
 Rmodel1 <- nimbleModel(code = occ1, constants = constants, data = data,
                        check = FALSE, calculate = FALSE, inits = inits)
-conf1 <- configureMCMC(Rmodel1, monitors = params, thin = nt, useConjugacy = FALSE, enableWAIC=TRUE)
+conf1 <- configureMCMC(Rmodel1, monitors = params, thin = nt, useConjugacy = FALSE)
 Rmcmc1 <- buildMCMC(conf1)
 Cmodel1 <- compileNimble(Rmodel1, showCompilerOutput = FALSE)
 Cmcmc1 <- compileNimble(Rmcmc1, project = Rmodel1)
 
 ## Run MCMC ####
 out <- runMCMC(Cmcmc1, niter = ni, nburnin = nb , nchains = nc, inits = inits,
-               setSeed = FALSE, progressBar = TRUE, samplesAsCodaMCMC = TRUE, WAIC=TRUE)
+               setSeed = FALSE, progressBar = TRUE, samplesAsCodaMCMC = TRUE)
 
 out.all <- rbind(out$samples$chain1,out$samples$chain2,out$samples$chain3)
 
