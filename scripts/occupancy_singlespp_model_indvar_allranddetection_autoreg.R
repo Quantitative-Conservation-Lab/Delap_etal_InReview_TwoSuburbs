@@ -58,7 +58,7 @@ species <- dim(array2)[3]
 R.hat <- rep(NA,species)
 
 #loop through species 
-for(i in 6:species){ #:species){
+for(i in 1:species){
 
 #pull out data for single species analysis
 spp.i <- array2[,,i,]
@@ -205,7 +205,7 @@ R.hat
 
 
 
-amcr <- paste(out.all[,"w.sitetype"],out.all[,"w.year"],out.all[,"w.year2"])
+#amcr <- paste(out.all[,"w.sitetype"],out.all[,"w.year"],out.all[,"w.year2"])
 
 
 

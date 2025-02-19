@@ -45,14 +45,27 @@ results[,,41] <- as.matrix(read.csv("results/occ_run2.WIFL.csv")) #WIFL - Adapte
 results[,,42] <- as.matrix(read.csv("results/occ_run2.WIWA.csv")) #WIWA - Avoider
 results[,,43] <- as.matrix(read.csv("results/occ_run2.YRWA.csv")) #YRWA - Adapter
 
+results <- results[,-c(1,2,9),]
+dimnames(results) = list(NULL,
+                         c("beta.site.type.2","beta.year","beta.year2","int.p","int.psi","p.site.type.1","sd.year","w.site.type","w.year","w.year2"),
+                         c("AMCR","AMGO","AMRO","ANHU","BARS","BCCH","BEWR","BHCO","BHGR","BRCR","BTYW","BUSH","CAVI","CBCH","CEDW","DEJU","EUST","GCKI","HAWO","HOFI","HOSP","HUVI","NOFL","OCWA","PAWR","PISI","PISFL","PUFI","RBNU","RBSA","ROPI","RUHU","SOSP","SPTO","STJA","SWTH","VGSW","WAVI","WCSP","WETA","WIFL","WIWA","YRWA"))
+
 avoiders.ind <- c(10,11,14,18,19,22,25,27,28,29,30,35,36,40,42)
 adapters.ind <- c(2,3,6,7,9,12,13,15,16,23,24,26,33,34,37,38,39,41,43)
 exploiters.ind <- c(1,4,5,8,17,20,21,31,32)
 
-results <- results[,-c(1,2,9),]
-dimnames(results) = list(NULL,
-                     c("beta.site.type.2","beta.year","beta.year2","int.p","int.psi","p.site.type.1","sd.year","w.site.type","w.year","w.year2"),
-                     c("AMCR","AMGO","AMRO","ANHU","BARS","BCCH","BEWR","BHCO","BHGR","BRCR","BTYW","BUSH","CAVI","CBCH","CEDW","DEJU","EUST","GCKI","HAWO","HOFI","HOSP","HUVI","NOFL","OCWA","PAWR","PISI","PISFL","PUFI","RBNU","RBSA","ROPI","RUHU","SOSP","SPTO","STJA","SWTH","VGSW","WAVI","WCSP","WETA","WIFL","WIWA","YRWA"))
+results.guilds <- array(NA,dim=c(210000,15,4))
+results.guilds[,,1] <- as.matrix(read.csv("results/occ_run2.Community.csv"))
+results.guilds[,,3] <- as.matrix(read.csv("results/occ_run2.avoiders.csv"))
+results.guilds[,,2] <- as.matrix(read.csv("results/occ_run2.adapters.csv"))
+results.guilds[,,4] <- as.matrix(read.csv("results/occ_run2.exploiters.csv")) 
+
+results.guilds <- results.guilds[,-c(1,2,9),]
+
+dimnames(results.guilds) = list(NULL,
+                         c("beta.site.type.2","beta.year","beta.year2","int.p","int.psi","p.site.type.1","var.p.species","var.p.year","var.psi.species","w.site.type","w.year","w.year2"),
+                         c("Community","avoiders","adapters","exploiters"))
+
 
 #put together the model weights selection table 
 mod.sel <- function(results){
@@ -74,6 +87,10 @@ mod.sel <- function(results){
 models <- mod.sel(results)
 models.pr <- apply(models,1,function(x){x/sum(x)})
 best.model <- apply(models.pr,2,which.max)
+
+models.guild <- mod.sel(results.guilds)
+models.guild.pr <- apply(models.guild,1,function(x){x/sum(x)})
+best.model.guild <- apply(models.guild.pr,2,which.max)
 
 models.pr.avoiders <- models.pr[,avoiders.ind]
 best.model.avoiders <- best.model[avoiders.ind]
