@@ -184,8 +184,6 @@ R.hat
 
 
 
-crow.mods <- paste(out.all[,"w.sitetype"],out.all[,"w.year"],out.all[,"w.year2"])
-
 
 
 

@@ -118,6 +118,7 @@ beta.site.type[1] <- 0
 beta.site.type[2] ~ dnorm(0,var = var.param)
 beta.year ~ dnorm(0,var = var.param)
 beta.year2 ~ dnorm(0,var = var.param)
+autoreg.psi ~ dnorm(0,sd=1)
 
 var.total ~ dgamma(3.289,7.8014)
 K <- 1 + w.sitetype + w.year + w.year2
@@ -191,7 +192,7 @@ out <- runMCMC(Cmcmc1, niter = ni, nburnin = nb , nchains = nc, inits = inits,
 
 out.all <- rbind(out$chain1,out$chain2,out$chain3)
 
-R.hat[i] <- gelman.diag(out[,c(2:11)],multivariate=TRUE)$mpsrf
+R.hat[i] <- gelman.diag(out[,c(1,3,4,5,6,7,8,9,10,11)],multivariate=TRUE)$mpsrf
 
 write.csv(out.all,paste("results/occ_run3.",spp.names[i], ".csv",sep=""))
 
@@ -204,7 +205,7 @@ R.hat
 
 
 
-
+amcr <- paste(out.all[,"w.sitetype"],out.all[,"w.year"],out.all[,"w.year2"])
 
 
 
