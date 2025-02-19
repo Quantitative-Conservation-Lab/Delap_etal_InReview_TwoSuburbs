@@ -58,7 +58,7 @@ species <- dim(array2)[3]
 R.hat <- rep(NA,species)
 
 #loop through species 
-for(i in 1:2){ #:species){
+for(i in 6:species){ #:species){
 
 #pull out data for single species analysis
 spp.i <- array2[,,i,]

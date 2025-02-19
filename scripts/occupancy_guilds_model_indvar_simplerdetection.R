@@ -3,7 +3,7 @@ library(nimble)
 library(MCMCvis)
 library(coda)
 
-GUILD <- "adapters"  #options are "avoiders", "adapters", "exploiters"
+GUILD <- "avoiders"  #options are "avoiders", "adapters", "exploiters"
  
 start.time <- Sys.time() 
 
