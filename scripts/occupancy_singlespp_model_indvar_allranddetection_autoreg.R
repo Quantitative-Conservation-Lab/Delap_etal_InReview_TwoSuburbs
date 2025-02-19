@@ -58,7 +58,7 @@ species <- dim(array2)[3]
 R.hat <- rep(NA,species)
 
 #loop through species 
-for(i in 1:species){
+for(i in 1:2){ #:species){
 
 #pull out data for single species analysis
 spp.i <- array2[,,i,]
@@ -86,7 +86,7 @@ for(s in 1:n.sites) {
 #model on occupancy 
 #first year - no autoregressive term
 for(s in 1:n.sites){
-  logit(psi[s,1]) <- int.psi + w.sitetype*beta.site.type[site.type[s]] + w.year*beta.year*year.norm[y] + w.year2*beta.year2*year2.norm[y] 
+  logit(psi[s,1]) <- int.psi + w.sitetype*beta.site.type[site.type[s]] + w.year*beta.year*year.norm[1] + w.year2*beta.year2*year2.norm[1] 
 }
 #all additional years - with autoregressive term 
 for(s in 1:n.sites){
@@ -106,7 +106,7 @@ for(s in 1:n.sites){
   
 #Priors 
 int.p ~ dnorm(0,sd=1)
-var.p.year ~ dgamma(1,1)
+var.p ~ dgamma(1,1)
 
 w.sitetype ~ dbern(1/2)
 w.year ~ dbern(2/3)
@@ -191,9 +191,9 @@ out <- runMCMC(Cmcmc1, niter = ni, nburnin = nb , nchains = nc, inits = inits,
 
 out.all <- rbind(out$chain1,out$chain2,out$chain3)
 
-R.hat[i] <- gelman.diag(out[,c(2,3,4,5,6,7,9,10,11,12)],multivariate=TRUE)$mpsrf
+R.hat[i] <- gelman.diag(out[,c(2:11)],multivariate=TRUE)$mpsrf
 
-write.csv(out.all,paste("results/occ_run2.",spp.names[i], ".csv",sep=""))
+write.csv(out.all,paste("results/occ_run3.",spp.names[i], ".csv",sep=""))
 
 print(i)
 
@@ -201,7 +201,6 @@ print(i)
 (elapsed <- Sys.time() - start.time)
 
 R.hat 
-
 
 
 

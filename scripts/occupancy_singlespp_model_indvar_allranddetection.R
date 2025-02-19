@@ -58,7 +58,7 @@ species <- dim(array2)[3]
 R.hat <- rep(NA,species)
 
 #loop through species 
-for(i in 1:species){
+for(i in 1:1){ #:species){
 
 #pull out data for single species analysis
 spp.i <- array2[,,i,]
@@ -89,13 +89,13 @@ for(s in 1:n.sites) {
 #Random effects 
 for(s in 1:n.sites){
   for(y in 1:n.years){
-    p.rand[s,y] ~ dnorm(0,var = var.p.year)
+    p.rand[s,y] ~ dnorm(0,var = var.p)
   }
 }
   
 #Priors 
 int.p ~ dnorm(0,sd=1)
-var.p.year ~ dgamma(1,1)
+var.p ~ dgamma(2,2)
 
 w.sitetype ~ dbern(1/2)
 w.year ~ dbern(2/3)
@@ -156,7 +156,7 @@ inits <- list(z=z.init)
 ######################################################################
 
 # Parameters monitored
-params <- c("int.p","p.site.type","var.p.year","int.psi","beta.site.type","beta.year","beta.year2","w.sitetype","w.year","w.year2") 
+params <- c("int.p","var.p","int.psi","beta.site.type","beta.year","beta.year2","w.sitetype","w.year","w.year2") 
 
 Rmodel1 <- nimbleModel(code = occ1, constants = constants, data = data,
                        check = FALSE, calculate = FALSE, inits = inits)
@@ -171,9 +171,9 @@ out <- runMCMC(Cmcmc1, niter = ni, nburnin = nb , nchains = nc, inits = inits,
 
 out.all <- rbind(out$chain1,out$chain2,out$chain3)
 
-R.hat[i] <- gelman.diag(out[,c(2,3,4,5,6,7,9,10,11,12)],multivariate=TRUE)$mpsrf
+R.hat[i] <- gelman.diag(out[,c(2:10)],multivariate=TRUE)$mpsrf
 
-write.csv(out.all,paste("results/occ_run2.",spp.names[i], ".csv",sep=""))
+write.csv(out.all,paste("results/occ_run3.",spp.names[i], ".csv",sep=""))
 
 print(i)
 
@@ -184,7 +184,7 @@ R.hat
 
 
 
-
+crow.mods <- paste(out.all[,"w.sitetype"],out.all[,"w.year"],out.all[,"w.year2"])
 
 
 
