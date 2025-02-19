@@ -3,7 +3,7 @@ library(nimble)
 library(MCMCvis)
 library(coda)
 
-GUILD <- "adapters"  #options are "avoiders", "adapters", "exploiters"
+GUILD <- "avoiders"  #options are "avoiders", "adapters", "exploiters"
 
 start.time <- Sys.time() 
 
@@ -236,7 +236,7 @@ out.all <- rbind(out$chain1,out$chain2,out$chain3)
 
 R.hat <- gelman.diag(out[,c(1,3,4,5,6,7,8,9,10,11)],multivariate=TRUE)$mpsrf
 
-write.csv(out.all,paste("results/occ_run3.Adapters.csv",sep=""))
+write.csv(out.all,paste("results/occ_run3.",GUILD,".csv",sep=""))
 
 (elapsed <- Sys.time() - start.time)
 
