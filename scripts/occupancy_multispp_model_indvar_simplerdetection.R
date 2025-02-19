@@ -171,14 +171,11 @@ Cmcmc1 <- compileNimble(Rmcmc1, project = Rmodel1)
 out <- runMCMC(Cmcmc1, niter = ni, nburnin = nb , nchains = nc, inits = inits,
                setSeed = FALSE, progressBar = TRUE, samplesAsCodaMCMC = TRUE)
 
-out.all <- rbind(out$samples$chain1,out$samples$chain2,out$samples$chain3)
+out.all <- rbind(out$chain1,out$chain2,out$chain3)
 
-R.hat[i] <- gelman.diag(out$samples[,c(2,3,4,5,6,7,9,10,11,12)],multivariate=TRUE)$mpsrf
+R.hat <- gelman.diag(out[,c(2,3,4,5,6,7,9,10,11,12)],multivariate=TRUE)$mpsrf
 
-write.csv(out.all,paste("results/occ.",spp.names[i], ".csv",sep=""))
-
-print(i)
-
+write.csv(out.all,paste("results/occ_run2.","Community", ".csv",sep=""))
 
 R.hat 
 
