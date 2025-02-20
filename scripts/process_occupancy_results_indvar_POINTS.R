@@ -1,53 +1,53 @@
 #read in all model results
-results <- array(NA,dim=c(105000,13,43))
+results <- array(NA,dim=c(105000,12,43))
 
-results[,,1] <- as.matrix(read.csv("results/occ_run2.AMCR.csv")) #AMCR - Exploiter 
-results[,,2] <- as.matrix(read.csv("results/occ_run2.AMGO.csv")) #AMGO - Adapter
-results[,,3] <- as.matrix(read.csv("results/occ_run2.AMRO.csv")) #AMRO - Adapter
-results[,,4] <- as.matrix(read.csv("results/occ_run2.ANHU.csv")) #ANHU - Exploiter
-results[,,5] <- as.matrix(read.csv("results/occ_run2.BARS.csv")) #BARS - Exploiter
-results[,,6] <- as.matrix(read.csv("results/occ_run2.BCCH.csv")) #BCCH - Adapter
-results[,,7] <- as.matrix(read.csv("results/occ_run2.BEWR.csv")) #BEWR - Adapter
-results[,,8] <- as.matrix(read.csv("results/occ_run2.BHCO.csv")) #BHCO - Exploiter
-results[,,9] <- as.matrix(read.csv("results/occ_run2.BHGR.csv")) #BHGR - Adapter
-results[,,10] <- as.matrix(read.csv("results/occ_run2.BRCR.csv")) #BRCR - Avoider
-results[,,11] <- as.matrix(read.csv("results/occ_run2.BTYW.csv")) #BTYW - Avoider
-results[,,12] <- as.matrix(read.csv("results/occ_run2.BUSH.csv")) #BUSH - Adapter
-results[,,13] <- as.matrix(read.csv("results/occ_run2.CAVI.csv")) #CAVI - Adapter
-results[,,14] <- as.matrix(read.csv("results/occ_run2.CBCH.csv")) #CBCH - Avoider
-results[,,15] <- as.matrix(read.csv("results/occ_run2.CEDW.csv")) #CEDW - Adapter
-results[,,16] <- as.matrix(read.csv("results/occ_run2.DEJU.csv")) #DEJU - Adapter
-results[,,17] <- as.matrix(read.csv("results/occ_run2.EUST.csv")) #EUST - Exploiter
-results[,,18] <- as.matrix(read.csv("results/occ_run2.GCKI.csv")) #GCKI - Avoider 
-results[,,19] <- as.matrix(read.csv("results/occ_run2.HAWO.csv")) #HAWO - Avoider
-results[,,20] <- as.matrix(read.csv("results/occ_run2.HOFI.csv")) #HOFI - Exploiter
-results[,,21] <- as.matrix(read.csv("results/occ_run2.HOSP.csv")) #HOSP - Exploiter
-results[,,22] <- as.matrix(read.csv("results/occ_run2.HUVI.csv")) #HUVI - Avoider
-results[,,23] <- as.matrix(read.csv("results/occ_run2.NOFL.csv")) #NOFL - Adapter
-results[,,24] <- as.matrix(read.csv("results/occ_run2.OCWA.csv")) #OCWA - Adapter
-results[,,25] <- as.matrix(read.csv("results/occ_run2.PAWR.csv")) #PAWR - Avoider
-results[,,26] <- as.matrix(read.csv("results/occ_run2.PISI.csv")) #PISI - Adapter
-results[,,27] <- as.matrix(read.csv("results/occ_run2.PSFL.csv")) #PSFL - Avoider 
-results[,,28] <- as.matrix(read.csv("results/occ_run2.PUFI.csv")) #PUFI - Avoider
-results[,,29] <- as.matrix(read.csv("results/occ_run2.RBNU.csv")) #RBNU - Avoider
-results[,,30] <- as.matrix(read.csv("results/occ_run2.RBSA.csv")) #RBSA - Avoider
-results[,,31] <- as.matrix(read.csv("results/occ_run2.ROPI.csv")) #ROPI - Exploiter
-results[,,32] <- as.matrix(read.csv("results/occ_run2.RUHU.csv")) #RUHU - Exploiter
-results[,,33] <- as.matrix(read.csv("results/occ_run2.SOSP.csv")) #SOSP - Adapter
-results[,,34] <- as.matrix(read.csv("results/occ_run2.SPTO.csv")) #SPTO - Adapter
-results[,,35] <- as.matrix(read.csv("results/occ_run2.STJA.csv")) #STJA - Avoider 
-results[,,36] <- as.matrix(read.csv("results/occ_run2.SWTH.csv")) #SWTH - Avoider
-results[,,37] <- as.matrix(read.csv("results/occ_run2.VGSW.csv")) #VGSW - Adapter
-results[,,38] <- as.matrix(read.csv("results/occ_run2.WAVI.csv")) #WAVI - Adapter
-results[,,39] <- as.matrix(read.csv("results/occ_run2.WCSP.csv")) #WCSP - Adapter
-results[,,40] <- as.matrix(read.csv("results/occ_run2.WETA.csv")) #WETA - Avoider
-results[,,41] <- as.matrix(read.csv("results/occ_run2.WIFL.csv")) #WIFL - Adapter
-results[,,42] <- as.matrix(read.csv("results/occ_run2.WIWA.csv")) #WIWA - Avoider
-results[,,43] <- as.matrix(read.csv("results/occ_run2.YRWA.csv")) #YRWA - Adapter
+results[,,1] <- as.matrix(read.csv("results/occ_run4.AMCR.csv")) #AMCR - Exploiter 
+results[,,2] <- as.matrix(read.csv("results/occ_run4.AMGO.csv")) #AMGO - Adapter
+results[,,3] <- as.matrix(read.csv("results/occ_run4.AMRO.csv")) #AMRO - Adapter
+results[,,4] <- as.matrix(read.csv("results/occ_run4.ANHU.csv")) #ANHU - Exploiter
+results[,,5] <- as.matrix(read.csv("results/occ_run4.BARS.csv")) #BARS - Exploiter
+results[,,6] <- as.matrix(read.csv("results/occ_run4.BCCH.csv")) #BCCH - Adapter
+results[,,7] <- as.matrix(read.csv("results/occ_run4.BEWR.csv")) #BEWR - Adapter
+results[,,8] <- as.matrix(read.csv("results/occ_run4.BHCO.csv")) #BHCO - Exploiter
+results[,,9] <- as.matrix(read.csv("results/occ_run4.BHGR.csv")) #BHGR - Adapter
+results[,,10] <- as.matrix(read.csv("results/occ_run4.BRCR.csv")) #BRCR - Avoider
+results[,,11] <- as.matrix(read.csv("results/occ_run4.BTYW.csv")) #BTYW - Avoider
+results[,,12] <- as.matrix(read.csv("results/occ_run4.BUSH.csv")) #BUSH - Adapter
+results[,,13] <- as.matrix(read.csv("results/occ_run4.CAVI.csv")) #CAVI - Adapter
+results[,,14] <- as.matrix(read.csv("results/occ_run4.CBCH.csv")) #CBCH - Avoider
+results[,,15] <- as.matrix(read.csv("results/occ_run4.CEDW.csv")) #CEDW - Adapter
+results[,,16] <- as.matrix(read.csv("results/occ_run4.DEJU.csv")) #DEJU - Adapter
+results[,,17] <- as.matrix(read.csv("results/occ_run4.EUST.csv")) #EUST - Exploiter
+results[,,18] <- as.matrix(read.csv("results/occ_run4.GCKI.csv")) #GCKI - Avoider 
+results[,,19] <- as.matrix(read.csv("results/occ_run4.HAWO.csv")) #HAWO - Avoider
+results[,,20] <- as.matrix(read.csv("results/occ_run4.HOFI.csv")) #HOFI - Exploiter
+results[,,21] <- as.matrix(read.csv("results/occ_run4.HOSP.csv")) #HOSP - Exploiter
+results[,,22] <- as.matrix(read.csv("results/occ_run4.HUVI.csv")) #HUVI - Avoider
+results[,,23] <- as.matrix(read.csv("results/occ_run4.NOFL.csv")) #NOFL - Adapter
+results[,,24] <- as.matrix(read.csv("results/occ_run4.OCWA.csv")) #OCWA - Adapter
+results[,,25] <- as.matrix(read.csv("results/occ_run4.PAWR.csv")) #PAWR - Avoider
+results[,,26] <- as.matrix(read.csv("results/occ_run4.PISI.csv")) #PISI - Adapter
+results[,,27] <- as.matrix(read.csv("results/occ_run4.PSFL.csv")) #PSFL - Avoider 
+results[,,28] <- as.matrix(read.csv("results/occ_run4.PUFI.csv")) #PUFI - Avoider
+results[,,29] <- as.matrix(read.csv("results/occ_run4.RBNU.csv")) #RBNU - Avoider
+results[,,30] <- as.matrix(read.csv("results/occ_run4.RBSA.csv")) #RBSA - Avoider
+results[,,31] <- as.matrix(read.csv("results/occ_run4.ROPI.csv")) #ROPI - Exploiter
+results[,,32] <- as.matrix(read.csv("results/occ_run4.RUHU.csv")) #RUHU - Exploiter
+results[,,33] <- as.matrix(read.csv("results/occ_run4.SOSP.csv")) #SOSP - Adapter
+results[,,34] <- as.matrix(read.csv("results/occ_run4.SPTO.csv")) #SPTO - Adapter
+results[,,35] <- as.matrix(read.csv("results/occ_run4.STJA.csv")) #STJA - Avoider 
+results[,,36] <- as.matrix(read.csv("results/occ_run4.SWTH.csv")) #SWTH - Avoider
+results[,,37] <- as.matrix(read.csv("results/occ_run4.VGSW.csv")) #VGSW - Adapter
+results[,,38] <- as.matrix(read.csv("results/occ_run4.WAVI.csv")) #WAVI - Adapter
+results[,,39] <- as.matrix(read.csv("results/occ_run4.WCSP.csv")) #WCSP - Adapter
+results[,,40] <- as.matrix(read.csv("results/occ_run4.WETA.csv")) #WETA - Avoider
+results[,,41] <- as.matrix(read.csv("results/occ_run4.WIFL.csv")) #WIFL - Adapter
+results[,,42] <- as.matrix(read.csv("results/occ_run4.WIWA.csv")) #WIWA - Avoider
+results[,,43] <- as.matrix(read.csv("results/occ_run4.YRWA.csv")) #YRWA - Adapter
 
-results <- results[,-c(1,2,9),]
+results <- results[,-c(1,2),]
 dimnames(results) = list(NULL,
-                         c("beta.site.type.2","beta.year","beta.year2","int.p","int.psi","p.site.type.1","sd.year","w.site.type","w.year","w.year2"),
+                         c("beta.site.type.2","beta.year","beta.year2","int.p","int.psi","sd.p.site","sd.p.year","w.site.type","w.year","w.year2"),
                          c("AMCR","AMGO","AMRO","ANHU","BARS","BCCH","BEWR","BHCO","BHGR","BRCR","BTYW","BUSH","CAVI","CBCH","CEDW","DEJU","EUST","GCKI","HAWO","HOFI","HOSP","HUVI","NOFL","OCWA","PAWR","PISI","PISFL","PUFI","RBNU","RBSA","ROPI","RUHU","SOSP","SPTO","STJA","SWTH","VGSW","WAVI","WCSP","WETA","WIFL","WIWA","YRWA"))
 
 avoiders.ind <- c(10,11,14,18,19,22,25,27,28,29,30,35,36,40,42)
@@ -55,10 +55,10 @@ adapters.ind <- c(2,3,6,7,9,12,13,15,16,23,24,26,33,34,37,38,39,41,43)
 exploiters.ind <- c(1,4,5,8,17,20,21,31,32)
 
 results.guilds <- array(NA,dim=c(210000,15,4))
-results.guilds[,,1] <- as.matrix(read.csv("results/occ_run2.Community.csv"))
-results.guilds[,,3] <- as.matrix(read.csv("results/occ_run2.avoiders.csv"))
-results.guilds[,,2] <- as.matrix(read.csv("results/occ_run2.adapters.csv"))
-results.guilds[,,4] <- as.matrix(read.csv("results/occ_run2.exploiters.csv")) 
+results.guilds[,,1] <- as.matrix(read.csv("results/occ_run4.Community.csv"))
+results.guilds[,,3] <- as.matrix(read.csv("results/occ_run4.avoiders.csv"))
+results.guilds[,,2] <- as.matrix(read.csv("results/occ_run4.adapters.csv"))
+results.guilds[,,4] <- as.matrix(read.csv("results/occ_run4.exploiters.csv")) 
 
 results.guilds <- results.guilds[,-c(1,2,9),]
 
