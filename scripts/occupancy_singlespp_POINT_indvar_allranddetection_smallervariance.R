@@ -86,7 +86,7 @@ species <- dim(array2)[3]
 R.hat <- rep(NA,species)
 
 #loop through species 
-for(i in 1:5){ #:species){
+for(i in 1:species){
 
 #pull out data for single species analysis
 spp.i <- array2[,,i,]
@@ -106,7 +106,7 @@ for(s in 1:n.points) {
       }#n replicate
     
     #observation model
-    logit(p[s,y]) <- int.p + p.rand[site[s],y]
+    logit(p[s,y]) <- int.p + p.rand.site[site[s]] + p.rand.year[y]
     
     #occupancy model 
     logit(psi[s,y]) <- int.psi + w.sitetype*beta.site.type[site.type[s]] + w.year*beta.year*year.norm[y] + w.year2*beta.year2*year2.norm[y] 
@@ -116,14 +116,16 @@ for(s in 1:n.points) {
 
 #Random effects 
 for(s in 1:n.sites){
-  for(y in 1:n.years){
-    p.rand[s,y] ~ dnorm(0,sd = sd.p)
-  }
+  p.rand.site[s] ~ dnorm(0,sd = sd.p.site)
+}
+for(y in 1:n.years){
+  p.rand.year[y] ~ dnorm(0,sd = sd.p.year)
 }
   
 #Priors 
 int.p ~ dnorm(0,sd=1)
-sd.p ~ dunif(0,1)
+sd.p.site ~ dunif(0,1)
+sd.p.year ~ dunif(0,1)
 
 w.sitetype ~ dbern(1/2)
 w.year ~ dbern(2/3)
@@ -185,7 +187,7 @@ inits <- list(z=z.init)
 ######################################################################
 
 # Parameters monitored
-params <- c("int.p","sd.p","int.psi","beta.site.type","beta.year","beta.year2","w.sitetype","w.year","w.year2") 
+params <- c("int.p","sd.p.site","sd.p.year","int.psi","beta.site.type","beta.year","beta.year2","w.sitetype","w.year","w.year2") 
 
 Rmodel1 <- nimbleModel(code = occ1, constants = constants, data = data,
                        check = FALSE, calculate = FALSE, inits = inits)
