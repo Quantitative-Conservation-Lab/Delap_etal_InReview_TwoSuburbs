@@ -55,9 +55,9 @@ adapters.ind <- c(2,3,6,7,9,12,13,15,16,23,24,26,33,34,37,38,39,41,43)
 exploiters.ind <- c(1,4,5,8,17,20,21,31,32)
 
 results.guilds <- array(NA,dim=c(105000,14,4))
-results.guilds[,,1] <- as.matrix(read.csv("results/occ_run4.Community.csv"))
-results.guilds[,,3] <- as.matrix(read.csv("results/occ_run4.avoiders.csv"))
-results.guilds[,,2] <- as.matrix(read.csv("results/occ_run4.adapters.csv"))
+results.guilds[,,1] <- as.matrix(read.csv("results/occ_run4.community.csv"))
+results.guilds[,,2] <- as.matrix(read.csv("results/occ_run4.avoiders.csv"))
+results.guilds[,,3] <- as.matrix(read.csv("results/occ_run4.adapters.csv"))
 results.guilds[,,4] <- as.matrix(read.csv("results/occ_run4.exploiters.csv")) 
 
 results.guilds <- results.guilds[,-c(1,2),]
@@ -130,6 +130,13 @@ best.params.adapters <- best.params[,c(5,1,2,3),adapters.ind]
 best.params.exploiters <- best.params[,c(5,1,2,3),exploiters.ind]
 dimnames(best.params) <- dimnames(results) 
 
+best.params.guild <- best.params(best.model.guild,results.guild)
+
+best.params.community.guild <- 
+best.params.avoiders.guild <- 
+best.params.adapters.guild <- 
+best.params.exploiters.guild <- 
+  
 output.params <- function(best.params){
   means <- round(apply(best.params,c(2,3),function(x)mean(x,na.rm=TRUE)),dig=3)
   lci <- round(apply(best.params,c(2,3),function(x)quantile(x,probs=0.025,na.rm=TRUE)),dig=3)
