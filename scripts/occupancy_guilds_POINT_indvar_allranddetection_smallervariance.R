@@ -3,7 +3,7 @@ library(nimble)
 library(MCMCvis)
 library(coda)
 
-GUILD <- "avoiders"  #options are "avoiders", "adapters", "exploiters", "community"
+GUILD <- "community"  #options are "avoiders", "adapters", "exploiters", "community"
 
 start.time <- Sys.time() 
 
@@ -57,7 +57,7 @@ year <- sort(unique(data1$Year))
 
 species <- c(9:61)
 
-#set up observation data dim = sites, years, species, reps 
+#set up observation data dim = points, years, species, reps 
 array2 <- array(NA,dim= c(53,12,53,4))
 for(j in 1:length(point)){
   for(y in 1:length(year)){
@@ -104,53 +104,48 @@ species.exploiters <- dim(array2.exploiters)[3]
 
 if(GUILD == "avoiders"){
   array2 <- array2.avoiders
-  array.eff <- array2.avoiders
+  array.eff <- array.eff.avoiders
   species <- species.avoiders
 }else if(GUILD == "adapters"){
   array2 <- array2.adapters
-  array.eff <- array2.adapters
+  array.eff <- array.eff.adapters
   species <- species.adapters
 }else if(GUILD == "exploiters"){ 
   array2 <- array2.exploiters
-  array.eff <- array2.exploiters
+  array.eff <- array.eff.exploiters
   species <- species.exploiters
 }else if(GUILD == "community"){ 
-  array2 <- array2.exploiters
-  array.eff <- array2.exploiters
-  species <- species.exploiters    
+  array2 <- array2
+  array.eff <- array.eff
+  species <- species    
 }
 
 
 #store gelman diagnostics 
 R.hat <- rep(NA,species)
 
-#loop through species 
-for(i in 1:species){
-
-#pull out data for single species analysis
-spp.i <- array2[,,i,]
-eff.i <- array.eff[,,i,]
-
 ##NIMBLE code 
 occ1 <- nimbleCode( { 
 
 #Likelihood
-for(s in 1:n.points) {
+for(s in 1:n.points){
   for(y in 1:n.years){
-    # State Process  
-      z[s,y] ~ dbern(psi[s,y])
+    for(k in 1:n.species){
+      # State Process  
+      z[s,y,k] ~ dbern(psi[s,y,k])
       # Observation Process  
       for(n in 1:n.reps) {
-        spp.i[s,y,n] ~ dbern(z[s,y] * p[s,y] * eff.i[s,y,n])  #state * p * effort (0 or 1)
+        array2[s,y,k,n] ~ dbern(z[s,y,k] * p[s,y,k] * array.eff[s,y,k,n])  #state * p * effort (0 or 1)
       }#n replicate
     
-    #observation model
-    logit(p[s,y]) <- int.p + p.rand.site[site[s]] + p.rand.year[y]
+      #observation model
+      logit(p[s,y,k]) <- int.p + p.rand.site[site[s]] + p.rand.year[y] + p.rand.species[k]
     
-    #occupancy model 
-    logit(psi[s,y]) <- int.psi + w.sitetype*beta.site.type[site.type[s]] + w.year*beta.year*year.norm[y] + w.year2*beta.year2*year2.norm[y] 
-  }#y year
-}#j site 
+      #occupancy model 
+      logit(psi[s,y,k]) <- int.psi + w.sitetype*beta.site.type[site.type[s]] + w.year*beta.year*year.norm[y] + w.year2*beta.year2*year2.norm[y] + psi.rand.species[k]
+    }#y year
+  }#k species  
+}#j point 
 
 
 #Random effects 
@@ -160,11 +155,16 @@ for(s in 1:n.sites){
 for(y in 1:n.years){
   p.rand.year[y] ~ dnorm(0,sd = sd.p.year)
 }
-  
+for(k in 1:n.species){
+  p.rand.species[k] ~ dnorm(0,sd = sd.p.species)
+  psi.rand.species[k] ~ dnorm(0,sd = sd.psi.species)
+}
+    
 #Priors 
 int.p ~ dnorm(0,sd=1)
 sd.p.site ~ dunif(0,1)
 sd.p.year ~ dunif(0,1)
+sd.p.species ~ dunif(0,1)
 
 w.sitetype ~ dbern(1/2)
 w.year ~ dbern(2/3)
@@ -176,6 +176,7 @@ beta.site.type[1] <- 0
 beta.site.type[2] ~ dnorm(0,var = var.param)
 beta.year ~ dnorm(0,var = var.param)
 beta.year2 ~ dnorm(0,var = var.param)
+sd.psi.species ~ dunif(0,1)
 
 var.total ~ dgamma(3.289,7.8014)
 K <- 1 + w.sitetype + w.year + w.year2
@@ -191,17 +192,18 @@ var.param <- var.total/K
 ######################################################################
 
 # Bundle data
-data <- list(spp.i=spp.i)
+data <- list(array2=array2)
 
 #get constants 
-n.points <- dim(spp.i)[1]
-n.years <- dim(spp.i)[2]
-n.reps <- dim(spp.i)[3]
+n.points <- dim(array2)[1]
+n.years <- dim(array2)[2]
+n.species <- dim(array2)[3]
+n.reps <- dim(array2)[4]
 n.sites <- length(unique(site))
 year.norm <- (c(1:12) - mean(c(1:12)))/sd(c(1:12))
 year2.norm <- pow(year.norm,2)
 
-constants <- list(eff.i=eff.i,site.type=site.type,site=site,year.norm=year.norm,year2.norm=year2.norm,n.sites=n.sites,n.points=n.points,n.years=n.years,n.reps=n.reps)
+constants <- list(array.eff=array.eff,site.type=site.type,site=site,year.norm=year.norm,year2.norm=year2.norm,n.sites=n.sites,n.points=n.points,n.years=n.years,n.species=n.species,n.reps=n.reps)
 
 ######################################################################
 #                                                                    #  
@@ -209,11 +211,13 @@ constants <- list(eff.i=eff.i,site.type=site.type,site=site,year.norm=year.norm,
 #                                                                    #    
 ######################################################################
 
-z.init <- matrix(0,nrow=n.points,ncol=n.years)
+z.init <- array(0,dim = c(n.points,n.years,n.species))
 for(s in 1:n.points){
   for(y in 1:n.years){
-    if(any(spp.i[s,y,]==1)){
-      z.init[s,y] <- 1 
+    for(k in 1:n.species){
+      if(any(array2[s,y,k,]==1)){
+        z.init[s,y,k] <- 1 
+      }  
     }  
   }
 }
@@ -226,7 +230,7 @@ inits <- list(z=z.init)
 ######################################################################
 
 # Parameters monitored
-params <- c("int.p","sd.p.site","sd.p.year","int.psi","beta.site.type","beta.year","beta.year2","w.sitetype","w.year","w.year2") 
+params <- c("int.p","sd.p.site","sd.p.year","sd.p.species","int.psi","beta.site.type","beta.year","beta.year2","sd.psi.species","w.sitetype","w.year","w.year2") 
 
 Rmodel1 <- nimbleModel(code = occ1, constants = constants, data = data,
                        check = FALSE, calculate = FALSE, inits = inits)
@@ -241,13 +245,12 @@ out <- runMCMC(Cmcmc1, niter = ni, nburnin = nb , nchains = nc, inits = inits,
 
 out.all <- rbind(out$chain1,out$chain2,out$chain3)
 
-R.hat[i] <- gelman.diag(out[,c(2,3,4,5,6,7,8)],multivariate=TRUE)$mpsrf
+R.hat <- gelman.diag(out[,c(2,3,4,5,6,7,8)],multivariate=TRUE)$mpsrf
 
-write.csv(out.all,paste("results/occ_run4.",spp.names[i], ".csv",sep=""))
+write.csv(out.all,paste("results/occ_run4.",GUILD, ".csv",sep=""))
 
-print(i)
 
-}
+
 (elapsed <- Sys.time() - start.time)
 
 R.hat 
