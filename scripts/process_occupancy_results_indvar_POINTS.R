@@ -123,24 +123,26 @@ best.params <- function(best.model,results){
   }
   return(params.best.model)
 }
-best.params <- best.params(best.model,results)
+best.params.all <- best.params(best.model,results)
 
-best.params.avoiders <- best.params[,c(5,1,2,3),avoiders.ind]
-best.params.adapters <- best.params[,c(5,1,2,3),adapters.ind]
-best.params.exploiters <- best.params[,c(5,1,2,3),exploiters.ind]
-dimnames(best.params) <- dimnames(results) 
+best.params.avoiders <- best.params.all[,c(5,1,2,3),avoiders.ind]
+best.params.adapters <- best.params.all[,c(5,1,2,3),adapters.ind]
+best.params.exploiters <- best.params.all[,c(5,1,2,3),exploiters.ind]
+dimnames(best.params.all) <- dimnames(results) 
 
-best.params.guild <- best.params(best.model.guild,results.guild)
+#What is the effect of site type on exploiters in the second-ranked model? 
+exploiters.results <- results.guilds[,,4]
+beta.site.type.model4 <- exploiters.results[intersect(intersect(which(exploiters.results[,"w.site.type"]==1 ),which(exploiters.results[,"w.year"]==1)),which(exploiters.results[,"w.year2"]==1)),1]
 
-best.params.community.guild <- 
-best.params.avoiders.guild <- 
-best.params.adapters.guild <- 
-best.params.exploiters.guild <- 
-  
+###FIX 
+best.params.guild <- best.params(best.model.guild[c(1,3,4)],results.guilds[,c(1,3,4)])
+
+best.params.guild <- best.params.guild[,c(5,1,2,3),]
+
 output.params <- function(best.params){
-  means <- round(apply(best.params,c(2,3),function(x)mean(x,na.rm=TRUE)),dig=3)
-  lci <- round(apply(best.params,c(2,3),function(x)quantile(x,probs=0.025,na.rm=TRUE)),dig=3)
-  uci <- round(apply(best.params,c(2,3),function(x)quantile(x,probs=0.975,na.rm=TRUE)),dig=3)
+  means <- round(apply(best.params,c(2,3),function(x)mean(x,na.rm=TRUE)),dig=2)
+  lci <- round(apply(best.params,c(2,3),function(x)quantile(x,probs=0.025,na.rm=TRUE)),dig=2)
+  uci <- round(apply(best.params,c(2,3),function(x)quantile(x,probs=0.975,na.rm=TRUE)),dig=2)
   best.out <- means
   for(i in 1:nrow(means)){
     for(j in 1:ncol(means)){
@@ -152,6 +154,7 @@ output.params <- function(best.params){
 output.avoiders <- output.params(best.params.avoiders)
 output.adapters <- output.params(best.params.adapters)
 output.exploiters <- output.params(best.params.exploiters)
+output.guild <- output.params(best.params.guild)
 
 #Probability that the coefficient is negative 
 prob.neg <- function(best.parms){
@@ -164,6 +167,7 @@ prob.neg <- function(best.parms){
 }
 prob.neg(best.params.avoiders)
 prob.neg(best.params.adapters)
+prob.neg(best.params.guild)
 #make predictions 
 
 year.norm <- (c(1:12) - mean(c(1:12)))/sd(c(1:12))
