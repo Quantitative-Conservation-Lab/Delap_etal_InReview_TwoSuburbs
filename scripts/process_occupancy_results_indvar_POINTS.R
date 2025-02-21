@@ -54,17 +54,17 @@ avoiders.ind <- c(10,11,14,18,19,22,25,27,28,29,30,35,36,40,42)
 adapters.ind <- c(2,3,6,7,9,12,13,15,16,23,24,26,33,34,37,38,39,41,43)
 exploiters.ind <- c(1,4,5,8,17,20,21,31,32)
 
-results.guilds <- array(NA,dim=c(210000,15,4))
+results.guilds <- array(NA,dim=c(105000,14,4))
 results.guilds[,,1] <- as.matrix(read.csv("results/occ_run4.Community.csv"))
 results.guilds[,,3] <- as.matrix(read.csv("results/occ_run4.avoiders.csv"))
 results.guilds[,,2] <- as.matrix(read.csv("results/occ_run4.adapters.csv"))
 results.guilds[,,4] <- as.matrix(read.csv("results/occ_run4.exploiters.csv")) 
 
-results.guilds <- results.guilds[,-c(1,2,9),]
+results.guilds <- results.guilds[,-c(1,2),]
 
 dimnames(results.guilds) = list(NULL,
-                         c("beta.site.type.2","beta.year","beta.year2","int.p","int.psi","p.site.type.1","var.p.species","var.p.year","var.psi.species","w.site.type","w.year","w.year2"),
-                         c("Community","avoiders","adapters","exploiters"))
+                         c("beta.site.type.2","beta.year","beta.year2","int.p","int.psi","sd.p.site","sd.p.species","sd.p.year","sd.psi.species","w.site.type","w.year","w.year2"),
+                         c("community","avoiders","adapters","exploiters"))
 
 
 #put together the model weights selection table 
@@ -146,6 +146,17 @@ output.avoiders <- output.params(best.params.avoiders)
 output.adapters <- output.params(best.params.adapters)
 output.exploiters <- output.params(best.params.exploiters)
 
+#Probability that the coefficient is negative 
+prob.neg <- function(best.parms){
+  prob.neg <- rep(NA,20)
+  for(i in 1:dim(best.parms)[3]){
+    best.parms <- best.parms[which(is.na(best.parms[,2,i])==FALSE),,]
+    prob.neg[i] <- (length(which(best.parms[,2,i]<0))/length(best.parms[,2,i]))
+  }
+  return(prob.neg)
+}
+prob.neg(best.params.avoiders)
+prob.neg(best.params.adapters)
 #make predictions 
 
 year.norm <- (c(1:12) - mean(c(1:12)))/sd(c(1:12))
