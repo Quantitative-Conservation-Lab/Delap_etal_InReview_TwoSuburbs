@@ -17,23 +17,18 @@ Folders include scripts, data, results, and figures. See files listed below.
 
 ### [Scripts](./scripts)
 
-analysis.R
+occupancy_guilds.R
 
-plotting_code_spp.R
+occupancy_singlespp.R
 
-plotting_code_guilds.R
+process_occupancy_results.R
  
 ### [Data](./data) 
 
-Bird_Data.csv
+bird.binary.noCorrRes.csv
 
 ### [Results](./results)
 
-spp.1.57.v2.RData
-
-allSpp_AIC.RData
-
-allBoots_15April.RData
 
 
 ### [Figures](./figures)
