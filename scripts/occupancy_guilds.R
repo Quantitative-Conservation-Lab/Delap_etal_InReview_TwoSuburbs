@@ -3,6 +3,7 @@ library(nimble)
 library(MCMCvis)
 library(coda)
 
+#select the guild you want to model here 
 GUILD <- "avoiders"  #options are "avoiders", "adapters", "exploiters", "community"
 
 start.time <- Sys.time() 
@@ -16,8 +17,8 @@ nc <- 3
 #import data 
 data1 <- read.csv("data/bird.binary.noCorrRes.csv") 
 
+#set up consecutive points 
 data1$new.point <- data1$Point
-
 for(i in 1:nrow(data1)){
   if(data1$Site[i] == "CN"){
     data1$new.point[i] <- data1$Point[i]
@@ -55,6 +56,7 @@ for(i in 1:length(site)){
 #years - put in order 
 year <- sort(unique(data1$Year))
 
+#species 
 species <- c(9:61)
 
 #set up observation data dim = points, years, species, reps 
@@ -81,7 +83,7 @@ array.eff <- array.eff[,,-c(10,12,19,21,29,36,39,44,45,50),]
 array2 <- array2[,,-c(10,12,19,21,29,36,39,44,45,50),]
 #species names 
 spp.names <- colnames(data1)[9:61][-c(10,12,19,21,29,36,39,44,45,50)]
-
+#remaining species count 
 species <- dim(array2)[3]
 
 #array.guild
@@ -89,17 +91,17 @@ avoiders.ind <- c(10,11,14,18,19,22,25,27,28,29,30,35,36,40,42)
 adapters.ind <- c(2,3,6,7,9,12,13,15,16,23,24,26,33,34,37,38,39,41,43)
 exploiters.ind <- c(1,4,5,8,17,20,21,31,32)
 
+#set up the data depending on the guild 
 array.eff.avoiders <- array.eff[,,avoiders.ind,]
 array2.avoiders <- array2[,,avoiders.ind,]
+species.avoiders <- dim(array2.avoiders)[3]
 
 array.eff.adapters <- array.eff[,,adapters.ind,]
 array2.adapters <- array2[,,adapters.ind,]
+species.adapters <- dim(array2.adapters)[3]
 
 array.eff.exploiters <- array.eff[,,exploiters.ind,]
 array2.exploiters <- array2[,,exploiters.ind,]
-
-species.avoiders <- dim(array2.avoiders)[3]
-species.adapters <- dim(array2.adapters)[3]
 species.exploiters <- dim(array2.exploiters)[3]
 
 if(GUILD == "avoiders"){
@@ -119,7 +121,6 @@ if(GUILD == "avoiders"){
   array.eff <- array.eff
   species <- species    
 }
-
 
 #store gelman diagnostics 
 R.hat <- rep(NA,species)
@@ -249,10 +250,9 @@ R.hat <- gelman.diag(out[,c(2,3,4,5,6,7,8)],multivariate=TRUE)$mpsrf
 
 write.csv(out.all,paste("results/occ_run4.",GUILD, ".csv",sep=""))
 
-
-
 (elapsed <- Sys.time() - start.time)
 
+#print R.hat 
 R.hat 
 
 

@@ -3,7 +3,6 @@ library(nimble)
 library(MCMCvis)
 library(coda)
 
-
 start.time <- Sys.time() 
 
 # MCMC settings
@@ -15,8 +14,8 @@ nc <- 3
 #import data 
 data1 <- read.csv("data/bird.binary.noCorrRes.csv") 
 
+#set up consecutive points 
 data1$new.point <- data1$Point
-
 for(i in 1:nrow(data1)){
   if(data1$Site[i] == "CN"){
     data1$new.point[i] <- data1$Point[i]
@@ -54,6 +53,7 @@ for(i in 1:length(site)){
 #years - put in order 
 year <- sort(unique(data1$Year))
 
+#species counts 
 species <- c(9:61)
 
 #set up observation data dim = sites, years, species, reps 
@@ -81,6 +81,7 @@ array2 <- array2[,,-c(10,12,19,21,29,36,39,44,45,50),]
 #species names 
 spp.names <- colnames(data1)[9:61][-c(10,12,19,21,29,36,39,44,45,50)]
 
+#final species count for loop 
 species <- dim(array2)[3]
 #store gelman diagnostics 
 R.hat <- rep(NA,species)
@@ -211,11 +212,6 @@ print(i)
 }
 (elapsed <- Sys.time() - start.time)
 
+#print R.hat 
 R.hat 
-
-
-
-
-
-
 
