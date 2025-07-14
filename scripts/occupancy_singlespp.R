@@ -133,15 +133,17 @@ w.year ~ dbern(2/3)
 w.yearsq ~ dbern(1/2)
 w.year2 <- w.year*w.yearsq
 
-int.psi ~ dnorm(0,var = var.param)
+int.psi ~ dnorm(0,var = sd = sd.param)
 beta.site.type[1] <- 0
-beta.site.type[2] ~ dnorm(0,var = var.param)
-beta.year ~ dnorm(0,var = var.param)
-beta.year2 ~ dnorm(0,var = var.param)
+beta.site.type[2] ~ dnorm(0,sd = sd.param)
+beta.year ~ dnorm(0,sd = sd.param)
+beta.year2 ~ dnorm(0,sd = sd.param)
 
-var.total ~ dgamma(3.289,7.8014)
+tau.total ~ dgamma(shape = 3.289, rate = 7.8014)
+var.total <- 1/tau.total 
 K <- 1 + w.sitetype + w.year + w.year2
 var.param <- var.total/K
+sd.param <- pow(var.param,0.5)
 
 })
 
