@@ -4,7 +4,7 @@ library(MCMCvis)
 library(coda)
 
 #select the guild you want to model here 
-GUILD <- "community"  #options are "avoiders", "adapters", "exploiters", "community"
+GUILD <- "exploiters"  #options are "avoiders", "adapters", "exploiters", "community"
 
 start.time <- Sys.time() 
 
