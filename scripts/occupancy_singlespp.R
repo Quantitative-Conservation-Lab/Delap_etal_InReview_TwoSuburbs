@@ -6,9 +6,9 @@ library(coda)
 start.time <- Sys.time() 
 
 # MCMC settings
-ni <- 40000
+ni <- 60000
 nt <- 1
-nb <- 5000
+nb <- 10000
 nc <- 3
 
 #import data 
@@ -87,7 +87,7 @@ species <- dim(array2)[3]
 R.hat <- rep(NA,species)
 
 #loop through species 
-for(i in 1:species){
+for(i in 15){
 
 #pull out data for single species analysis
 spp.i <- array2[,,i,]
