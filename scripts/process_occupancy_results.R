@@ -1,12 +1,19 @@
+library(ggplot2)
+library(ggpubr)
+library(viridis)
+
 #process occupancy results to get info for tables in paper and create figures 
 
 #read in model results for species 
-results <- array(NA,dim=c(105000,12,43))
-results[,,1] <- as.matrix(read.csv("results/occ_run4.AMCR.csv")) #AMCR - Exploiter 
-results[,,2] <- as.matrix(read.csv("results/occ_run4.AMGO.csv")) #AMGO - Adapter
-results[,,3] <- as.matrix(read.csv("results/occ_run4.AMRO.csv")) #AMRO - Adapter
-results[,,4] <- as.matrix(read.csv("results/occ_run4.ANHU.csv")) #ANHU - Exploiter
-results[,,5] <- as.matrix(read.csv("results/occ_run4.BARS.csv")) #BARS - Exploiter
+results <- array(NA,dim=c(375000,12,43))
+
+#note that we used more samples from CEDW 
+
+results[,,1] <- as.matrix(read.csv("results/occ_run_17Sept.AMCR.csv")) #AMCR - Exploiter 
+results[,,2] <- as.matrix(read.csv("results/occ_run_17Sept.AMGO.csv")) #AMGO - Adapter
+results[,,3] <- as.matrix(read.csv("results/occ_run_17Sept.AMRO.csv")) #AMRO - Adapter
+results[,,4] <- as.matrix(read.csv("results/occ_run_17Sept.ANHU.csv")) #ANHU - Exploiter
+results[,,5] <- as.matrix(read.csv("results/occ_run_17Sept.BARS.csv")) #BARS - Exploiter
 results[,,6] <- as.matrix(read.csv("results/occ_run4.BCCH.csv")) #BCCH - Adapter
 results[,,7] <- as.matrix(read.csv("results/occ_run4.BEWR.csv")) #BEWR - Adapter
 results[,,8] <- as.matrix(read.csv("results/occ_run4.BHCO.csv")) #BHCO - Exploiter
@@ -16,7 +23,7 @@ results[,,11] <- as.matrix(read.csv("results/occ_run4.BTYW.csv")) #BTYW - Avoide
 results[,,12] <- as.matrix(read.csv("results/occ_run4.BUSH.csv")) #BUSH - Adapter
 results[,,13] <- as.matrix(read.csv("results/occ_run4.CAVI.csv")) #CAVI - Adapter
 results[,,14] <- as.matrix(read.csv("results/occ_run4.CBCH.csv")) #CBCH - Avoider
-results[,,15] <- as.matrix(read.csv("results/occ_run4.CEDW.csv")) #CEDW - Adapter
+results[,,15] <- as.matrix(read.csv("results/occ_run4.CBCH.csv")) #CBCH - Avoider
 results[,,16] <- as.matrix(read.csv("results/occ_run4.DEJU.csv")) #DEJU - Adapter
 results[,,17] <- as.matrix(read.csv("results/occ_run4.EUST.csv")) #EUST - Exploiter
 results[,,18] <- as.matrix(read.csv("results/occ_run4.GCKI.csv")) #GCKI - Avoider 
@@ -50,6 +57,8 @@ results <- results[,-c(1,2),] #get rid of unneccesary columns
 dimnames(results) = list(NULL,
                          c("beta.site.type.2","beta.year","beta.year2","int.p","int.psi","sd.p.site","sd.p.year","w.site.type","w.year","w.year2"),
                          c("AMCR","AMGO","AMRO","ANHU","BARS","BCCH","BEWR","BHCO","BHGR","BRCR","BTYW","BUSH","CAVI","CBCH","CEDW","DEJU","EUST","GCKI","HAWO","HOFI","HOSP","HUVI","NOFL","OCWA","PAWR","PISI","PISFL","PUFI","RBNU","RBSA","ROPI","RUHU","SOSP","SPTO","STJA","SWTH","VGSW","WAVI","WCSP","WETA","WIFL","WIWA","YRWA"))
+
+species.list <-  c("AMCR","AMGO","AMRO","ANHU","BARS","BCCH","BEWR","BHCO","BHGR","BRCR","BTYW","BUSH","CAVI","CBCH","CEDW","DEJU","EUST","GCKI","HAWO","HOFI","HOSP","HUVI","NOFL","OCWA","PAWR","PISI","PISFL","PUFI","RBNU","RBSA","ROPI","RUHU","SOSP","SPTO","STJA","SWTH","VGSW","WAVI","WCSP","WETA","WIFL","WIWA","YRWA")
 
 #indicators for guilds 
 avoiders.ind <- c(10,11,14,18,19,22,25,27,28,29,30,35,36,40,42)
@@ -147,7 +156,7 @@ prob.neg(best.params.exploiters)
 
 #make predictions 
 year.norm <- (c(1:12) - mean(c(1:12)))/sd(c(1:12))
-year2.norm <- pow(year.norm,2)
+year2.norm <- year.norm^2
 covars <- cbind(c(year.norm,year.norm),c(year2.norm,year2.norm),c(rep(1,12),rep(2,12)))
 colnames(covars) <- c("year","year2","site.type")
 
@@ -175,7 +184,7 @@ preds <- array(NA,dim=c(dim(results)[1],24,dim(results)[3]))
 preds <- best.preds(best.model,best.params.all,covars)
 
 #predictions for individual species 
-preds.new <- array(NA,dim = c(43,105000,24))
+preds.new <- array(NA,dim = c(dim(results)[3],dim(results)[1],24))
 for(i in 1:43){
   preds.new[i,,] <- preds[,,i] 
 }
@@ -214,6 +223,8 @@ plot_type_1 <- which(best.model==2 | best.model==3 | best.model==4)
 #those without site type in the best model 
 plot_type_2 <- which(best.model==1 | best.model==5 | best.model==6)
 
+
+
 #set up the plotting functions - with site type
 plot_type1 <- function(i){
   ggplot(data = all.plot) +
@@ -224,34 +235,36 @@ plot_type1 <- function(i){
     geom_line(aes(x=Year,y = rep(-4,12),col="Combined")) +  #this is Junk
     scale_x_continuous(breaks=seq(1,12,2), limits = c(1,12)) +
     scale_y_continuous(breaks=seq(0,1,0.25), limits = c(0,1)) +
-    geom_text(x=7, y=0.9, size = 3.5, label=dimnames(preds.new)[[1]][i]) +
-    scale_color_manual(name = "", breaks = c("CD", "PCD", "Combined"), values = c("CD" = viridis(4,option = "inferno")[1], "PCD" = viridis(4,option = "inferno")[3], "Combined" = viridis(4,option = "mako")[3])) +
+    geom_text(x=7, y=0.1, size = 1.75, label=dimnames(preds.new)[[1]][i]) +
+    scale_color_manual(name = "",breaks = c("CD","PCD","Combined"),values = c("CD" = viridis(4,option = "inferno")[1], "PCD" = viridis(4,option = "inferno")[3], "Combined" = viridis(4,option = "mako")[3]), drop = FALSE) +
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.title.x = element_blank(), axis.title.y = element_blank(),
-          panel.background = element_blank(), axis.line = element_line(colour = "black"),text = element_text(size = 16),legend.text = element_text(size=16),legend.key.width = unit(2,"cm"),legend.key = element_blank()) 
+          panel.background = element_blank(), axis.line = element_line(colour = "black"),text = element_text(size = 12),legend.text = element_text(size=12),legend.key.width = unit(1.5,"cm"),legend.key = element_blank()) 
 }
 
 #without site type 
 plot_type2 <- function(i){
   ggplot(data = all.plot) +
-    geom_line(aes(x=Year,y = all.plot[,i],col="Combined")) + #this is CD 
+    geom_line(aes(x=Year,y = rep(-4,12),col="CD"), show.legend=TRUE) + #this is junk 
+    geom_line(aes(x=Year,y = rep(-4,12),col="PCD"), show.legend=TRUE) +  #this is junk
+    geom_line(aes(x=Year,y = all.plot[,i],col="Combined"), show.legend=TRUE) + #this is CD 
     geom_ribbon(aes(x=Year,ymin = all.plot[,i+43],ymax = all.plot[,i+43*2]), fill = viridis(4,option = "mako")[3], alpha = 0.4) +
     scale_x_continuous(breaks=seq(1,12,2), limits = c(1,12)) +
     scale_y_continuous(breaks=seq(0,1,0.25), limits = c(0,1)) +
-    geom_text(x=7, y=0.9, size = 3.5, label=dimnames(preds.new)[[1]][i]) +
-    scale_color_manual(name = "", breaks = c("CD", "PCD", "Combined"), values = c("CD" = viridis(4,option = "inferno")[1], "PCD" = viridis(4,option = "inferno")[3], "Combined" = viridis(4,option = "mako")[3])) +
+    geom_text(x=7, y=0.1, size = 1.75, label=dimnames(preds.new)[[1]][i]) +
+    scale_color_manual(name = "", breaks = c("CD","PCD","Combined"), values = c("CD" = viridis(4,option = "inferno")[1], "PCD" = viridis(4,option = "inferno")[3], "Combined" = viridis(4,option = "mako")[3]), drop = FALSE) +
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.title.x = element_blank(), axis.title.y = element_blank(),
-          panel.background = element_blank(), axis.line = element_line(colour = "black"),text = element_text(size = 16),legend.text = element_text(size=16),legend.key.width = unit(2,"cm"),legend.key = element_blank()) 
+          panel.background = element_blank(), axis.line = element_line(colour = "black"),text = element_text(size = 12),legend.text = element_text(size=12),legend.key.width = unit(1.5,"cm"),legend.key = element_blank()) 
 }
 
 #add best model to names 
-dimnames(preds.new)[[1]] <- c("American Crow (5)","American Goldfinch (6)","American Robin (1)","Anna's Hummingbird (6)","Barn Swallow (1)","Black-capped Chickadee (1)", 
-                       "Bewick's Wren (2)","Brown-headed Cowbird (6)","Black-headed Grosbeak (3)","Brown Creeper (2)",
-                       "Black-throated Gray Warbler (3)","Bushtit (3)","Cassin's Vireo (4)","Chestnut-backed Chickadee (2)","Cedar Waxwing (1)","Dark-eyed Junco (1)", 
-                       "European Starling (6)","Golden-crowned Kinglet (3)","Hairy Woodpecker (2)","House Finch (5)", 
-                       "House Sparrow (5)","Hutton's Vireo (4)","Northern Flicker (4)","Orange-crowned Warbler (4)","Pacific Wren (4)", 
-                       "Pine Siskin (6)","Pacific-slope Flycatcher (3)","Purple Finch (1)","Red-breasted Nuthatch (2)","Red-breasted Sapsucker (6)",
-                       "Rock Pigeon (6)","Rufous Hummingbird (1)","Song Sparrow (2)","Spotted Towhee (2)","Steller's Jay (1)", 
-                       "Swainson's Thrush (2)","Violet-green Swallow (6)","Warbling Vireo (5)","White-crowned Sparrow (5)", 
+dimnames(preds.new)[[1]] <- c("American Crow (5)","American Goldfinch (6)","American Robin (6)","Anna's Hummingbird (6)","Barn Swallow (2)","Black-capped Chickadee (2)", 
+                       "Bewick's Wren (2)","Brown-headed Cowbird (4)","Black-headed Grosbeak (3)","Brown Creeper (4)",
+                       "Black-throated Gray Warbler (3)","Bushtit (2)","Cassin's Vireo (4)","Chestnut-backed Chickadee (4)","Cedar Waxwing (6)","Dark-eyed Junco (1)", 
+                       "European Starling (6)","Golden-crowned Kinglet (3)","Hairy Woodpecker (2)","House Finch (3)", 
+                       "House Sparrow (3)","Hutton's Vireo (4)","Northern Flicker (4)","Orange-crowned Warbler (4)","Pacific Wren (4)", 
+                       "Pine Siskin (4)","Pacific-slope Flycatcher (3)","Purple Finch (5)","Red-breasted Nuthatch (2)","Red-breasted Sapsucker (4)",
+                       "Rock Pigeon (6)","Rufous Hummingbird (2)","Song Sparrow (4)","Spotted Towhee (2)","Steller's Jay (3)", 
+                       "Swainson's Thrush (3)","Violet-green Swallow (6)","Warbling Vireo (3)","White-crowned Sparrow (5)", 
                        "Western Tanager (6)","Willow Flycatcher (6)","Wilson's Warbler (3)","Yellow-rumped Warbler (5)")
 
 
@@ -262,9 +275,9 @@ dimnames(preds.new)[[1]] <- c("American Crow (5)","American Goldfinch (6)","Amer
 #######################################################################
 
 #include best model with names 
-avoider.spp <- c("Brown Creeper (2)","Black-throated Gray Warbler (3)","Chestnut-backed Chickadee (2)","Golden-crowned Kinglet (3)","Hairy Woodpecker (2)","Hutton's Vireo (4)",
-                 "Pacific Wren (4)","Pacific-slope Flycatcher (3)","Purple Finch (1)","Red-breasted Nuthatch (2)","Red-breasted Sapsucker (6)",
-                  "Steller's Jay (1)","Swainson's Thrush (2)","Western Tanager (6)","Wilson's Warbler (3)")
+avoider.spp <- c("Brown Creeper (3)","Black-throated Gray Warbler (3)","Chestnut-backed Chickadee (4)","Golden-crowned Kinglet (3)","Hairy Woodpecker (2)","Hutton's Vireo (4)",
+                 "Pacific Wren (4)","Pacific-slope Flycatcher (3)","Purple Finch (5)","Red-breasted Nuthatch (2)","Red-breasted Sapsucker (4)",
+                  "Steller's Jay (3)","Swainson's Thrush (3)","Western Tanager (6)","Wilson's Warbler (3)")
 
 
 ##CREATE AVOIDER.MEMBER AND THEN USE IT TO BUILD AVOIDER.GG 
@@ -277,12 +290,16 @@ for(i in 1:length(avoider.spp)){
   }else avoider.member[i] <- NA
 }
 
-avoider.gg <- ggarrange(plot_type1(10),plot_type1(11),plot_type1(14),plot_type1(18),plot_type1(19),plot_type1(22),plot_type1(25),plot_type1(27),
-                        plot_type2(28),plot_type1(29),plot_type2(30),plot_type2(35),plot_type1(36),plot_type2(40),plot_type1(42),common.legend=TRUE, legend = "right")
+avoider.gg <- ggarrange(plot_type1(10),plot_type1(11),plot_type1(14),
+                        plot_type1(18),plot_type1(19),plot_type1(22),
+                        plot_type1(25),plot_type1(27),plot_type2(28),
+                        plot_type1(29),plot_type1(30),plot_type1(35),
+                        plot_type1(36),plot_type2(40),plot_type1(42),
+                        common.legend=TRUE,show.legend=TRUE, legend = "right")
 
 annotate_figure(avoider.gg,
-                left = text_grob("Occupancy Probability", color = "black", size = 18, rot = 90),
-                bottom = text_grob("Year",color = "black",size = 18))
+                left = text_grob("Occupancy Probability", color = "black", size = 16, rot = 90),
+                bottom = text_grob("Year",color = "black",size = 16))
 
 
 #######################################################################
@@ -292,9 +309,9 @@ annotate_figure(avoider.gg,
 #######################################################################
 
 #include best model with names 
-adapter.spp <- c("American Goldfinch (6)","American Robin (1)","Black-capped Chickadee (1)","Bewick's Wren (2)","Black-headed Grosbeak (3)","Bushtit (3)","Cassin's Vireo (4)",
-                 "Cedar Waxwing (1)","Dark-eyed Junco (1)","Northern Flicker (4)","Orange-crowned Warbler (4)","Pine Siskin (6)","Song Sparrow (2)","Spotted Towhee (2)",
-                 "Violet-green Swallow (6)","Warbling Vireo (5)","White-crowned Sparrow (5)","Willow Flycatcher (6)","Yellow-rumped Warbler (5)")
+adapter.spp <- c("American Goldfinch (6)","American Robin (6)","Black-capped Chickadee (2)","Bewick's Wren (2)","Black-headed Grosbeak (3)","Bushtit (2)","Cassin's Vireo (4)",
+                 "Cedar Waxwing (4)","Dark-eyed Junco (1)","Northern Flicker (4)","Orange-crowned Warbler (4)","Pine Siskin (4)","Song Sparrow (4)","Spotted Towhee (2)",
+                 "Violet-green Swallow (6)","Warbling Vireo (3)","White-crowned Sparrow (5)","Willow Flycatcher (6)","Yellow-rumped Warbler (5)")
 
 
 ##CREATE adapter.MEMBER AND THEN USE IT TO BUILD EXPLOITER.GG 
@@ -307,11 +324,18 @@ for(i in 1:length(adapter.spp)){
   }else adapter.member[i] <- NA
 }
 
-adapter.gg <- ggarrange(plot_type1(2),plot_type1(3),plot_type1(6),plot_type2(7),plot_type2(9),plot_type2(12),plot_type2(13),plot_type1(15),plot_type1(16),plot_type2(23),plot_type2(24),plot_type1(26),plot_type2(33),plot_type2(34),plot_type1(37),plot_type1(38),plot_type1(39),plot_type1(41),plot_type1(43),common.legend=TRUE, legend = "right")
+adapter.gg <- ggarrange(plot_type2(2),plot_type2(3),plot_type1(6),
+                        plot_type1(7),plot_type1(9),plot_type1(12),
+                        plot_type1(13),plot_type1(15),plot_type2(16),
+                        plot_type1(23),plot_type1(24),plot_type1(26),
+                        plot_type1(33),plot_type1(34),plot_type2(37),
+                        plot_type1(38),plot_type2(39),plot_type2(41),
+                        plot_type2(43),
+                        common.legend=TRUE,show.legend=TRUE, legend = "right")
 
 annotate_figure(adapter.gg,
-                left = text_grob("Occupancy Probability", color = "black", size = 18, rot = 90),
-                bottom = text_grob("Year",color = "black",size = 18))
+                left = text_grob("Occupancy Probability", color = "black", size = 16, rot = 90),
+                bottom = text_grob("Year",color = "black",size = 16))
 
 
 
@@ -322,8 +346,8 @@ annotate_figure(adapter.gg,
 #######################################################################
 
 #include best model with names 
-exploiter.spp <- c("American Crow (5)","Anna's Hummingbird (6)","Barn Swallow (1)","Brown-headed Cowbird (6)",
-                   "European Starling (6)","House Finch (5)","House Sparrow (5)","Rock Pigeon (6)","Rufous Hummingbird (1)")
+exploiter.spp <- c("American Crow (5)","Anna's Hummingbird (6)","Barn Swallow (2)","Brown-headed Cowbird (4)",
+                   "European Starling (6)","House Finch (3)","House Sparrow (3)","Rock Pigeon (6)","Rufous Hummingbird (2)")
 
 ##CREATE EXPLOITER.MEMBER AND THEN USE IT TO BUILD EXPLOITER.GG 
 exploiter.member <- rep(NA,length(exploiter.spp))
@@ -335,11 +359,14 @@ for(i in 1:length(exploiter.spp)){
   }else exploiter.member[i] <- NA
 }
 
-exploiter.gg <- ggarrange(plot_type2(1),plot_type2(4),plot_type2(5),plot_type2(8),plot_type2(17),plot_type2(20),plot_type2(21),plot_type2(32),plot_type2(33),common.legend=TRUE, legend = "right")
+exploiter.gg <- ggarrange(plot_type2(1),plot_type2(4),plot_type1(5),
+                          plot_type1(8),plot_type2(17),plot_type1(20),
+                          plot_type1(21),plot_type2(31),plot_type1(32),
+                          common.legend=TRUE,show.legend=TRUE, legend = "right")
 
 annotate_figure(exploiter.gg,
-                left = text_grob("Occupancy Probability", color = "black", size = 18, rot = 90),
-                bottom = text_grob("Year",color = "black",size = 18))
+                left = text_grob("Occupancy Probability", color = "black", size = 16, rot = 90),
+                bottom = text_grob("Year",color = "black",size = 16))
 
 
 #######################################################################
@@ -413,26 +440,44 @@ Year <- c(1:12)
 all.plot.guild <- data.frame(pv.guild.mean.cd,pv.guild.lowr.cd,pv.guild.uppr.cd,pv.guild.mean.pcd,pv.guild.lowr.pcd,pv.guild.uppr.pcd,Year)
 
 #set up the plotting functions 
-plot_guilds <- function(i){
+plot_guilds1 <- function(i){
   ggplot(data = all.plot.guild) +
     geom_line(aes(x=Year,y = all.plot.guild[,i],col="CD")) + #this is CD 
     geom_ribbon(aes(x=Year,ymin = all.plot.guild[,i+4],ymax = all.plot.guild[,i+4*2]), fill = viridis(4,option = "inferno")[1], alpha = 0.3) +
     geom_line(aes(x=Year,y = all.plot.guild[,i+4*3],col="PCD")) +  #this is PCD
     geom_ribbon(aes(x=Year,ymin = all.plot.guild[,i+4*4],ymax = all.plot.guild[,i+4*5]), fill = viridis(4,option = "inferno")[3], alpha = 0.3) +
+    geom_line(aes(x=Year,y = rep(-4,12),col="Combined")) + #this is junk 
     scale_x_continuous(breaks=seq(1,12,2), limits = c(1,12)) +
     scale_y_continuous(breaks=seq(0,1,0.25), limits = c(0,1)) +
-    geom_text(x=7, y=0.9, size = 6, label = label[i]) + # label=dimnames(pv.guild)[[1]][i]) +
-    scale_color_manual(name = "", breaks = c("CD", "PCD"), values = c("CD" = viridis(4,option = "inferno")[1], "PCD" = viridis(4,option = "inferno")[3])) +
+    geom_text(x=7, y=0.1, size = 4, label = label[i]) + # label=dimnames(pv.guild)[[1]][i]) +
+    scale_color_manual(name = "", breaks = c("CD","PCD","Combined"), values = c("CD" = viridis(4,option = "inferno")[1], "PCD" = viridis(4,option = "inferno")[3], "Combined" = viridis(4,option = "mako")[3]), drop = FALSE) +
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.title.x = element_blank(), axis.title.y = element_blank(),
-          panel.background = element_blank(), axis.line = element_line(colour = "black"),text = element_text(size = 16),legend.text = element_text(size=16),legend.key.width = unit(2,"cm"),legend.key = element_blank()) 
+          panel.background = element_blank(), axis.line = element_line(colour = "black"),text = element_text(size = 12),legend.text = element_text(size=12),legend.key.width = unit(1.5,"cm"),legend.key = element_blank()) 
   
 }
 
-guilds <- ggarrange(plot_guilds(1),plot_guilds(2),plot_guilds(3),plot_guilds(4),common.legend=TRUE,legend = "right") 
+#set up the plotting functions 
+plot_guilds2 <- function(i){
+  ggplot(data = all.plot.guild) +
+    geom_line(aes(x=Year,y = rep(-4,12),col="CD")) + #this is junk 
+    geom_line(aes(x=Year,y = rep(-4,12),col="PCD")) +  #this is junk
+    geom_line(aes(x=Year,y = all.plot[,i],col="Combined"),show.legend=TRUE) + #this is CD 
+    geom_ribbon(aes(x=Year,ymin = all.plot[,i+43],ymax = all.plot[,i+43*2]), fill = viridis(4,option = "mako")[3], alpha = 0.4) +
+    scale_x_continuous(breaks=seq(1,12,2), limits = c(1,12)) +
+    scale_y_continuous(breaks=seq(0,1,0.25), limits = c(0,1)) +
+    geom_text(x=7, y=0.1, size = 4, label = label[i]) + # label=dimnames(pv.guild)[[1]][i]) +
+    scale_color_manual(name = "", breaks = c("CD","PCD","Combined"), values = c("CD" = viridis(4,option = "inferno")[1], "PCD" = viridis(4,option = "inferno")[3], "Combined" = viridis(4,option = "mako")[3]), drop = FALSE) +
+    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.title.x = element_blank(), axis.title.y = element_blank(),
+          panel.background = element_blank(), axis.line = element_line(colour = "black"),text = element_text(size = 12),legend.text = element_text(size=12),legend.key.width = unit(1.5,"cm"),legend.key = element_blank()) 
+  
+}
+
+
+guilds <- ggarrange(plot_guilds1(1),plot_guilds1(2),plot_guilds1(3),plot_guilds2(4),common.legend=TRUE,show.legend=TRUE,legend = "right") 
 
 annotate_figure(guilds,
-                left = text_grob("Occupancy Probability", color = "black", size = 18, rot = 90),
-                bottom = text_grob("Year",color = "black",size = 18))
+                left = text_grob("Occupancy Probability", color = "black", size = 16, rot = 90),
+                bottom = text_grob("Year",color = "black",size = 16))
 
 
 
